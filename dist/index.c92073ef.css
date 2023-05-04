@@ -1,0 +1,203 @@
+@import "https://fonts.googleapis.com/css?family=Montserrat|Montserrat+Alternates|Poppins&display=swap";
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: Montserrat Alternates, sans-serif;
+}
+
+body {
+  position: relative;
+}
+
+.header {
+  width: 100%;
+  height: 100px;
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+
+.container {
+  width: 90%;
+  max-width: 1200px;
+  margin: auto;
+}
+
+.container .btn-menu, .logo {
+  align-items: center;
+  display: flex;
+}
+
+.container .btn-menu label {
+  color: #000;
+  cursor: pointer;
+  font-size: 25px;
+}
+
+.slider-container {
+  vertical-align: middle;
+  display: inline-block;
+}
+
+#opacity-slider {
+  vertical-align: middle;
+  margin-right: 5px;
+}
+
+#opacity-value {
+  min-width: 40px;
+  text-align: right;
+  margin-left: 5px;
+  display: inline-block;
+}
+
+.logo h1 {
+  color: #000;
+  margin-left: 10px;
+  font-size: 22px;
+  font-weight: 400;
+}
+
+.container {
+  height: 100px;
+  justify-content: space-between;
+  align-items: center;
+  display: flex;
+}
+
+.container .menu {
+  align-items: center;
+  display: flex;
+}
+
+.container .menu a {
+  color: #000;
+  border-bottom: 2px solid #0000;
+  margin-right: 5px;
+  padding: 15px;
+  font-size: 15px;
+  line-height: normal;
+  text-decoration: none;
+  transition: all .3s;
+  display: inline-block;
+}
+
+.container .menu a:hover {
+  border-bottom: 2px solid #c7c7c7;
+  padding-bottom: 5px;
+}
+
+.container .menu button {
+  color: #000;
+  border: 2px solid #0000;
+  margin-right: 5px;
+  padding: 15px;
+  font-size: 15px;
+  line-height: normal;
+  text-decoration: none;
+  transition: all .3s;
+  display: inline-block;
+}
+
+.container .menu button:hover {
+  border-bottom: 2px solid #c7c7c7;
+  padding-bottom: 5px;
+}
+
+.toggle-btn {
+  color: #000;
+  border: 2px solid #0000;
+  margin-right: 5px;
+  padding: 15px;
+  font-size: 15px;
+  line-height: normal;
+  text-decoration: none;
+  transition: all .3s;
+  display: inline-block;
+}
+
+.toggle-btn.active {
+  color: #fff;
+  background-color: #4caf50;
+}
+
+#btn-menu {
+  display: none;
+}
+
+.container-menu {
+  width: 100%;
+  height: 300vh;
+  opacity: 0;
+  visibility: hidden;
+  background: #00000080;
+  transition: all .5s;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+#btn-menu:checked ~ .container-menu {
+  opacity: 1;
+  visibility: visible;
+}
+
+.cont-menu {
+  width: 100%;
+  max-width: 250px;
+  height: 300vh;
+  background: #1c1c1c;
+  transition: all .5s;
+  position: relative;
+  transform: translateX(-100%);
+}
+
+#btn-menu:checked ~ .container-menu .cont-menu {
+  transform: translateX(0%);
+}
+
+.cont-menu nav {
+  transform: translateY(5%);
+}
+
+.cont-menu nav a {
+  color: #c7c7c7;
+  border-left: 5px solid #0000;
+  padding: 20px;
+  text-decoration: none;
+  transition: all .4s;
+  display: block;
+}
+
+.cont-menu nav a:hover {
+  background: #1f1f1f;
+  border-left: 5px solid #c7c7c7;
+}
+
+.cont-menu nav button {
+  color: #c7c7c7;
+  width: 100%;
+  background: #1f1f1f;
+  border-left: 5px solid #0000;
+  padding: 20px;
+  text-decoration: none;
+  transition: all .4s;
+  display: block;
+}
+
+.cont-menu nav button:hover {
+  background: #1f1f1f;
+  border-left: 5px solid #c7c7c7;
+}
+
+.cont-menu label {
+  color: #fff;
+  cursor: pointer;
+  font-size: 18px;
+  position: absolute;
+  top: 10px;
+  right: 5px;
+}
+
+/*# sourceMappingURL=index.c92073ef.css.map */

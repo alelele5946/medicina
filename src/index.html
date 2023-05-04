@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estudiantes Medicina</title>
+    <link rel="stylesheet" href="./css/style.css">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/tween.js/20.0.3/tween.umd.js" integrity="sha512-T07MoUSqffM8IKU7WCC5DWiG56NPo4dcTuWbzbV2pJo5cUPfnteoFn2SEPgQgLpNAR7qdNyCONXz6oJG/YXMbA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+</head>
+<body>
+    <header class="header">
+		<div class="container">
+		<div class="btn-menu">
+			<label for="btn-menu">☰</label>
+		</div>
+			<div class="logo">
+				<h1>Logotipo</h1>
+			</div>
+			<nav class="menu">
+				<button id="axisBtn">axis</button>
+				<button id="upView">Up</button>
+				<button id="frontView">front</button>
+				<button id="downView">down</button>
+				<button id="toggleRaycaster" class="toggle-btn">Toggle Raycaster</button>
+				
+				<div class="slider-container">
+					<input type="range" id="opacity-slider" min="0" max="100" value="100" />
+					<span id="opacity-value">100%</span>
+  				</div>
+  
+  
+				<button id="deselect">deselect</button>
+				<button id="toggleDragDrop" class="toggle-btn">Toggle Drag & Drop</button>
+
+				
+		</div>
+	</header>
+    <input type="checkbox" id="btn-menu">
+<div class="container-menu">
+	<div class="cont-menu">
+		<nav>
+			
+			<div id="botones-container"></div>
+		</nav>
+		<label for="btn-menu">✖️</label>
+	</div>
+</div>
+    <script src="/src/js/scripts.js" type="module"></script>
+</body>
+</html>
