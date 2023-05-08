@@ -157,15 +157,52 @@ dragControls.addEventListener('dragstart', function (event) {
 
 dragControls.addEventListener('drag', (event) => {
     console.log('drag', event.object);
+
+    const xPos = event.object.position.x;
+    const yPos = event.object.position.y;
+    const zPos = event.object.position.z;
+
+    const partPos = selectedPart.getWorldPosition(new THREE.Vector3());
+
+    // Verifica si el objeto ha alcanzado la posición deseada
+    if ((xPos >= partPos.x-2 && xPos < partPos.x+2) && (yPos >= partPos.y-2 && yPos < partPos.y+2) && (zPos >= partPos.z-2 && zPos < partPos.z+2)) {
+        // Actualiza el texto y el color del fondo del objeto según sea necesario
+        if (currentCSSObject) {
+            currentCSSObject.element.innerHTML = 'Posición correcta';
+            changeBackgroundColor(currentCSSObject, 'green');
+        }
+    } else {
+        if (currentCSSObject) {
+            currentCSSObject.element.innerHTML = 'Posición incorrecta';
+            changeBackgroundColor(currentCSSObject, 'red');
+        }
+    }
 });
 
+
 dragControls.addEventListener('dragend', (event) => {
-    console.log('dragend', event.object);
+    console.log('dragend', event.object.getWorldPosition(new THREE.Vector3()));
     if (currentCSSObject) {
         event.object.remove(currentCSSObject);
         currentCSSObject = null;
     }
+
+    const xPos = event.object.position.x;
+    const yPos = event.object.position.y;
+    const zPos = event.object.position.z;
+    if(selectedPart){
+        const partPos = selectedPart.getWorldPosition(new THREE.Vector3());
+
+    // Verifica si el objeto ha alcanzado la posición deseada
+    if ((xPos >= partPos.x-2 && xPos < partPos.x+2) && (yPos >= partPos.y-2 && yPos < partPos.y+2) && (zPos >= partPos.z-2 && zPos < partPos.z+2)) {
+        // Coloca el objeto en la posición exacta
+        event.object.position.set(partPos.x, partPos.y, partPos.z);
+    }
+
+    }
+    
 });
+
 
 
 
@@ -577,7 +614,7 @@ function animarCamara(camara, nuevaParte) {
 
      //camara.position.set(newX, newY, newZ);
 
-     
+     /*
     const startPosition = camara.position.clone();
     const targetPosition = new THREE.Vector3(newX, newY, newZ);
     const startDirection = camara.getWorldDirection(new THREE.Vector3()).clone();
@@ -612,52 +649,41 @@ function animarCamara(camara, nuevaParte) {
         }
 
     }
-// Modifica el numero que le pase hasta que sea el que quiero
-/*
-        function actualize(numbInit, numbFinal){
-            if(numbInit > numbFinal){
-                numbInit += -0.01;
-                if(numbInit < numbFinal) return numbFinal;
-                return numbInit
-            }
-            numbInit += 0.01;
-            if(numbInit > numbFinal) return numbFinal;
-            return numbInit
 
-        }
+*/   new TWEEN.Tween(camera.position)
+    .to(
+    {
+        x: newX,
+        y: newY,
+        z: newZ,
+    },
+    1000
+    )
+    .easing(TWEEN.Easing.Cubic.Out)
+    .start()
+    .onUpdate(()=>camera.lookAt(posicionNuevaParte));
 
-        let time = 0;
-        console.log(camara.position != targetPosition, "ahaa");
-        let lookAt = camara.getWorldDirection(new THREE.Vector3()).clone();
-        while(camara.position != targetPosition && lookAt != posicionNuevaParte || time >= 100){
-            console.log(camara.position, targetPosition);
-            console.log(lookAt, posicionNuevaParte);
-            const delay = 20000; // Retraso en milisegundos
-            setTimeout(() => {
-                animationRequestId = requestAnimationFrame(animateCamera);
-            }, delay);
-            camara.position.x = actualize(camara.position.x, targetPosition.x);
-            camara.position.y = actualize(camara.position.y, targetPosition.y);
-            camara.position.z = actualize(camara.position.z, targetPosition.z);
-            
-            
-            lookAt.x = actualize(lookAt.x, posicionNuevaParte.x);
-            lookAt.y = actualize(lookAt.y, posicionNuevaParte.y);
-            lookAt.z = actualize(lookAt.z, posicionNuevaParte.z);
+    /*new TWEEN.Tween(camara.lookAt)
+    .to(
+    {
+        x: newX,
+        y: newY,
+        z: newZ,
+    },
+    500
+    )
+    .easing(TWEEN.Easing.Cubic.Out)
+    .start()
+    }*/
 
-            camara.lookAt(lookAt);
-            time += 1;
-        }
-
-
-*/
+    //camara.position.set(newX,newY,newZ);
+    //camera.lookAt(posicionNuevaParte);
     
-    
-    
+}
 
-    animationRequestId = requestAnimationFrame(animateCamera);
+   // animationRequestId = requestAnimationFrame(animateCamera);
      
-  }
+  //}
   
 
 
@@ -675,26 +701,27 @@ function addPartCopy(part, position) {
 //funcion para crear texto----------------------------------------
 
 function createCSS2DObject(text) {
-    /*
-    const element = document.createElement('div');
-    element.innerHTML = text;
-    element.style.color = 'white';
-    element.style.fontFamily = 'Arial, sans-serif';
-    element.style.fontSize = '24px';
-    element.style.pointerEvents = 'none'; // Para que el texto no interfiera con el DragControls
-  
-    const cssObject = new CSS2DObject(element);
-    cssObject.position.set(0, 50, 0);
-  
-    return cssObject;*/
-
     const div = document.createElement('div');
     div.className = 'label';
     div.textContent = text;
     div.style.marginTop = '-5em'; // Ajusta el valor según la distancia que deseas
+    div.style.backgroundColor = 'red';
+    //div.style.border = '2px solid black';
+    div.style.padding = '5px';
+    div.style.color = 'white';
+    div.style.fontFamily = 'Arial, sans-serif';
+    div.style.fontSize = '16px';
+    div.style.pointerEvents = 'none'; // Para que el texto no interfiera con el DragControls
+
     const cssObject = new CSS2DObject(div);
     return cssObject;
-  }
+}
+
+function changeBackgroundColor(cssObject, color) {
+    if (cssObject && cssObject.element) {
+        cssObject.element.style.backgroundColor = color;
+    }
+}
 
   //------------------------------------------------------------------------------------------
   

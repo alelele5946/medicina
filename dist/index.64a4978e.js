@@ -661,12 +661,36 @@ dragControls.addEventListener("dragstart", function(event) {
 });
 dragControls.addEventListener("drag", (event)=>{
     console.log("drag", event.object);
+    const xPos = event.object.position.x;
+    const yPos = event.object.position.y;
+    const zPos = event.object.position.z;
+    const partPos = selectedPart.getWorldPosition(new _three.Vector3());
+    // Verifica si el objeto ha alcanzado la posición deseada
+    if (xPos >= partPos.x - 2 && xPos < partPos.x + 2 && yPos >= partPos.y - 2 && yPos < partPos.y + 2 && zPos >= partPos.z - 2 && zPos < partPos.z + 2) // Actualiza el texto y el color del fondo del objeto según sea necesario
+    {
+        if (currentCSSObject) {
+            currentCSSObject.element.innerHTML = "Posici\xf3n correcta";
+            changeBackgroundColor(currentCSSObject, "green");
+        }
+    } else if (currentCSSObject) {
+        currentCSSObject.element.innerHTML = "Posici\xf3n incorrecta";
+        changeBackgroundColor(currentCSSObject, "red");
+    }
 });
 dragControls.addEventListener("dragend", (event)=>{
-    console.log("dragend", event.object);
+    console.log("dragend", event.object.getWorldPosition(new _three.Vector3()));
     if (currentCSSObject) {
         event.object.remove(currentCSSObject);
         currentCSSObject = null;
+    }
+    const xPos = event.object.position.x;
+    const yPos = event.object.position.y;
+    const zPos = event.object.position.z;
+    if (selectedPart) {
+        const partPos = selectedPart.getWorldPosition(new _three.Vector3());
+        // Verifica si el objeto ha alcanzado la posición deseada
+        if (xPos >= partPos.x - 2 && xPos < partPos.x + 2 && yPos >= partPos.y - 2 && yPos < partPos.y + 2 && zPos >= partPos.z - 2 && zPos < partPos.z + 2) // Coloca el objeto en la posición exacta
+        event.object.position.set(partPos.x, partPos.y, partPos.z);
     }
 });
 /* Orbit controls*/ const controls = new (0, _orbitControlsJs.OrbitControls)(camera, renderer.domElement);
@@ -975,70 +999,63 @@ function animarCamara(camara, nuevaParte) {
     animationRequestId = requestAnimationFrame(animateCamera);
     
     */ //camara.position.set(newX, newY, newZ);
+    /*
     const startPosition = camara.position.clone();
-    const targetPosition = new _three.Vector3(newX, newY, newZ);
-    const startDirection = camara.getWorldDirection(new _three.Vector3()).clone();
+    const targetPosition = new THREE.Vector3(newX, newY, newZ);
+    const startDirection = camara.getWorldDirection(new THREE.Vector3()).clone();
     const targetDirection = posicionNuevaParte.clone().sub(camara.position).normalize();
     const animationDuration = 2000;
     const startTime = performance.now();
-    if (animationRequestId) cancelAnimationFrame(animationRequestId);
-    function animateCamera(time) {
+
+    if (animationRequestId) {
+        cancelAnimationFrame(animationRequestId);
+    }
+
+    
+    function animateCamera(time) {    
         const elapsedTime = time - startTime;
         const progress = Math.min(elapsedTime / animationDuration, 1);
+    
         camara.position.lerpVectors(startPosition, targetPosition, progress);
+    
         // Interpolar la dirección de la cámara
         const currentDirection = startDirection.clone().lerp(targetDirection, progress);
         const currentTarget = camara.position.clone().add(currentDirection);
         camara.lookAt(currentTarget);
-        if (progress < 1) animationRequestId = requestAnimationFrame(animateCamera);
-        else {
+    
+        if (progress < 1) {
+            animationRequestId = requestAnimationFrame(animateCamera);
+        } else {
             // Establecer exactamente la posición y dirección objetivo al final de la animación
             camara.position.copy(targetPosition);
             camara.lookAt(posicionNuevaParte);
             animationRequestId = null;
-            console.log(camara.position, camara.getWorldDirection(new _three.Vector3()), posicionNuevaParte);
+            console.log(camara.position, camara.getWorldDirection(new THREE.Vector3()), posicionNuevaParte);
         }
+
     }
-    // Modifica el numero que le pase hasta que sea el que quiero
-    /*
-        function actualize(numbInit, numbFinal){
-            if(numbInit > numbFinal){
-                numbInit += -0.01;
-                if(numbInit < numbFinal) return numbFinal;
-                return numbInit
-            }
-            numbInit += 0.01;
-            if(numbInit > numbFinal) return numbFinal;
-            return numbInit
 
-        }
-
-        let time = 0;
-        console.log(camara.position != targetPosition, "ahaa");
-        let lookAt = camara.getWorldDirection(new THREE.Vector3()).clone();
-        while(camara.position != targetPosition && lookAt != posicionNuevaParte || time >= 100){
-            console.log(camara.position, targetPosition);
-            console.log(lookAt, posicionNuevaParte);
-            const delay = 20000; // Retraso en milisegundos
-            setTimeout(() => {
-                animationRequestId = requestAnimationFrame(animateCamera);
-            }, delay);
-            camara.position.x = actualize(camara.position.x, targetPosition.x);
-            camara.position.y = actualize(camara.position.y, targetPosition.y);
-            camara.position.z = actualize(camara.position.z, targetPosition.z);
-            
-            
-            lookAt.x = actualize(lookAt.x, posicionNuevaParte.x);
-            lookAt.y = actualize(lookAt.y, posicionNuevaParte.y);
-            lookAt.z = actualize(lookAt.z, posicionNuevaParte.z);
-
-            camara.lookAt(lookAt);
-            time += 1;
-        }
-
-
-*/ animationRequestId = requestAnimationFrame(animateCamera);
+*/ new TWEEN.Tween(camera.position).to({
+        x: newX,
+        y: newY,
+        z: newZ
+    }, 1000).easing(TWEEN.Easing.Cubic.Out).start().onUpdate(()=>camera.lookAt(posicionNuevaParte));
+/*new TWEEN.Tween(camara.lookAt)
+    .to(
+    {
+        x: newX,
+        y: newY,
+        z: newZ,
+    },
+    500
+    )
+    .easing(TWEEN.Easing.Cubic.Out)
+    .start()
+    }*/ //camara.position.set(newX,newY,newZ);
+//camera.lookAt(posicionNuevaParte);
 }
+// animationRequestId = requestAnimationFrame(animateCamera);
+//}
 function addPartCopy(part, position) {
     const partCopy = part.clone();
     partCopy.position.set(position.x, position.y, position.z);
@@ -1050,23 +1067,22 @@ function addPartCopy(part, position) {
 }
 //funcion para crear texto----------------------------------------
 function createCSS2DObject(text) {
-    /*
-    const element = document.createElement('div');
-    element.innerHTML = text;
-    element.style.color = 'white';
-    element.style.fontFamily = 'Arial, sans-serif';
-    element.style.fontSize = '24px';
-    element.style.pointerEvents = 'none'; // Para que el texto no interfiera con el DragControls
-  
-    const cssObject = new CSS2DObject(element);
-    cssObject.position.set(0, 50, 0);
-  
-    return cssObject;*/ const div = document.createElement("div");
+    const div = document.createElement("div");
     div.className = "label";
     div.textContent = text;
     div.style.marginTop = "-5em"; // Ajusta el valor según la distancia que deseas
+    div.style.backgroundColor = "red";
+    //div.style.border = '2px solid black';
+    div.style.padding = "5px";
+    div.style.color = "white";
+    div.style.fontFamily = "Arial, sans-serif";
+    div.style.fontSize = "16px";
+    div.style.pointerEvents = "none"; // Para que el texto no interfiera con el DragControls
     const cssObject = new (0, _css2Drenderer.CSS2DObject)(div);
     return cssObject;
+}
+function changeBackgroundColor(cssObject, color) {
+    if (cssObject && cssObject.element) cssObject.element.style.backgroundColor = color;
 }
 //------------------------------------------------------------------------------------------
 function animate() {
@@ -1077,7 +1093,7 @@ function animate() {
 }
 renderer.setAnimationLoop(animate);
 
-},{"three":"ktPTu","three/examples/jsm/controls/OrbitControls.js":"7mqRv","three/examples/jsm/loaders/FBXLoader.js":"e0BdD","c0da6ec473d91ed5":"4TO1x","../js/modules/DragControls":"cCY2u","three/examples/jsm/renderers/CSS2DRenderer":"3tWLO"}],"ktPTu":[function(require,module,exports) {
+},{"three":"ktPTu","three/examples/jsm/controls/OrbitControls.js":"7mqRv","../js/modules/DragControls":"cCY2u","three/examples/jsm/loaders/FBXLoader.js":"e0BdD","three/examples/jsm/renderers/CSS2DRenderer":"3tWLO","c0da6ec473d91ed5":"4TO1x"}],"ktPTu":[function(require,module,exports) {
 /**
  * @license
  * Copyright 2010-2023 Three.js Authors
@@ -31205,6 +31221,142 @@ class MapControls extends OrbitControls {
     }
 }
 
+},{"three":"ktPTu","@parcel/transformer-js/src/esmodule-helpers.js":"jrXSY"}],"cCY2u":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "DragControls", ()=>DragControls);
+var _three = require("three");
+const _plane = new (0, _three.Plane)();
+const _raycaster = new (0, _three.Raycaster)();
+const _pointer = new (0, _three.Vector2)();
+const _offset = new (0, _three.Vector3)();
+const _intersection = new (0, _three.Vector3)();
+const _worldPosition = new (0, _three.Vector3)();
+const _inverseMatrix = new (0, _three.Matrix4)();
+class DragControls extends (0, _three.EventDispatcher) {
+    constructor(_objects, _camera, _domElement){
+        super();
+        _domElement.style.touchAction = "none"; // disable touch scroll
+        let _selected = null, _hovered = null;
+        const _intersections = [];
+        //
+        const scope = this;
+        function activate() {
+            _domElement.addEventListener("pointermove", onPointerMove);
+            _domElement.addEventListener("pointerdown", onPointerDown);
+            _domElement.addEventListener("pointerup", onPointerCancel);
+            _domElement.addEventListener("pointerleave", onPointerCancel);
+        }
+        function deactivate() {
+            _domElement.removeEventListener("pointermove", onPointerMove);
+            _domElement.removeEventListener("pointerdown", onPointerDown);
+            _domElement.removeEventListener("pointerup", onPointerCancel);
+            _domElement.removeEventListener("pointerleave", onPointerCancel);
+            _domElement.style.cursor = "";
+        }
+        function dispose() {
+            deactivate();
+        }
+        function getObjects() {
+            return _objects;
+        }
+        function getRaycaster() {
+            return _raycaster;
+        }
+        function onPointerMove(event) {
+            if (scope.enabled === false) return;
+            updatePointer(event);
+            _raycaster.setFromCamera(_pointer, _camera);
+            if (_selected) {
+                if (_raycaster.ray.intersectPlane(_plane, _intersection)) _selected.position.copy(_intersection.sub(_offset).applyMatrix4(_inverseMatrix));
+                scope.dispatchEvent({
+                    type: "drag",
+                    object: _selected
+                });
+                return;
+            }
+            // hover support
+            if (event.pointerType === "mouse" || event.pointerType === "pen") {
+                _intersections.length = 0;
+                _raycaster.setFromCamera(_pointer, _camera);
+                _raycaster.intersectObjects(_objects, true, _intersections);
+                if (_intersections.length > 0) {
+                    const object = _intersections[0].object;
+                    _plane.setFromNormalAndCoplanarPoint(_camera.getWorldDirection(_plane.normal), _worldPosition.setFromMatrixPosition(object.matrixWorld));
+                    if (_hovered !== object && _hovered !== null) {
+                        scope.dispatchEvent({
+                            type: "hoveroff",
+                            object: _hovered
+                        });
+                        _domElement.style.cursor = "auto";
+                        _hovered = null;
+                    }
+                    if (_hovered !== object) {
+                        scope.dispatchEvent({
+                            type: "hoveron",
+                            object: object
+                        });
+                        _domElement.style.cursor = "pointer";
+                        _hovered = object;
+                    }
+                } else if (_hovered !== null) {
+                    scope.dispatchEvent({
+                        type: "hoveroff",
+                        object: _hovered
+                    });
+                    _domElement.style.cursor = "auto";
+                    _hovered = null;
+                }
+            }
+        }
+        function onPointerDown(event) {
+            if (scope.enabled === false) return;
+            updatePointer(event);
+            _intersections.length = 0;
+            _raycaster.setFromCamera(_pointer, _camera);
+            _raycaster.intersectObjects(_objects, true, _intersections);
+            if (_intersections.length > 0) {
+                _selected = scope.transformGroup === true ? _objects[0] : _intersections[0].object;
+                _plane.setFromNormalAndCoplanarPoint(_camera.getWorldDirection(_plane.normal), _worldPosition.setFromMatrixPosition(_selected.matrixWorld));
+                if (_raycaster.ray.intersectPlane(_plane, _intersection)) {
+                    _inverseMatrix.copy(_selected.parent.matrixWorld).invert();
+                    _offset.copy(_intersection).sub(_worldPosition.setFromMatrixPosition(_selected.matrixWorld));
+                }
+                _domElement.style.cursor = "move";
+                scope.dispatchEvent({
+                    type: "dragstart",
+                    object: _selected
+                });
+            }
+        }
+        function onPointerCancel() {
+            if (scope.enabled === false) return;
+            if (_selected) {
+                scope.dispatchEvent({
+                    type: "dragend",
+                    object: _selected
+                });
+                _selected = null;
+            }
+            _domElement.style.cursor = _hovered ? "pointer" : "auto";
+        }
+        function updatePointer(event) {
+            const rect = _domElement.getBoundingClientRect();
+            _pointer.x = (event.clientX - rect.left) / rect.width * 2 - 1;
+            _pointer.y = -(event.clientY - rect.top) / rect.height * 2 + 1;
+        }
+        activate();
+        // API
+        this.enabled = true;
+        this.transformGroup = false;
+        this.activate = activate;
+        this.deactivate = deactivate;
+        this.dispose = dispose;
+        this.getObjects = getObjects;
+        this.getRaycaster = getRaycaster;
+    }
+}
+
 },{"three":"ktPTu","@parcel/transformer-js/src/esmodule-helpers.js":"jrXSY"}],"e0BdD":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
@@ -36324,179 +36476,6 @@ returns point for given (u, v)
     target.set(Sw.x, Sw.y, Sw.z);
 }
 
-},{"three":"ktPTu","@parcel/transformer-js/src/esmodule-helpers.js":"jrXSY"}],"4TO1x":[function(require,module,exports) {
-module.exports = require("560d8d717262241f").getBundleURL("e6MYJ") + "zAnatomy-OnlyHead.1027e885.fbx" + "?" + Date.now();
-
-},{"560d8d717262241f":"ajxAx"}],"ajxAx":[function(require,module,exports) {
-"use strict";
-var bundleURL = {};
-function getBundleURLCached(id) {
-    var value = bundleURL[id];
-    if (!value) {
-        value = getBundleURL();
-        bundleURL[id] = value;
-    }
-    return value;
-}
-function getBundleURL() {
-    try {
-        throw new Error();
-    } catch (err) {
-        var matches = ("" + err.stack).match(/(https?|file|ftp|(chrome|moz|safari-web)-extension):\/\/[^)\n]+/g);
-        if (matches) // The first two stack frames will be this function and getBundleURLCached.
-        // Use the 3rd one, which will be a runtime in the original bundle.
-        return getBaseURL(matches[2]);
-    }
-    return "/";
-}
-function getBaseURL(url) {
-    return ("" + url).replace(/^((?:https?|file|ftp|(chrome|moz|safari-web)-extension):\/\/.+)\/[^/]+$/, "$1") + "/";
-} // TODO: Replace uses with `new URL(url).origin` when ie11 is no longer supported.
-function getOrigin(url) {
-    var matches = ("" + url).match(/(https?|file|ftp|(chrome|moz|safari-web)-extension):\/\/[^/]+/);
-    if (!matches) throw new Error("Origin not found");
-    return matches[0];
-}
-exports.getBundleURL = getBundleURLCached;
-exports.getBaseURL = getBaseURL;
-exports.getOrigin = getOrigin;
-
-},{}],"cCY2u":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "DragControls", ()=>DragControls);
-var _three = require("three");
-const _plane = new (0, _three.Plane)();
-const _raycaster = new (0, _three.Raycaster)();
-const _pointer = new (0, _three.Vector2)();
-const _offset = new (0, _three.Vector3)();
-const _intersection = new (0, _three.Vector3)();
-const _worldPosition = new (0, _three.Vector3)();
-const _inverseMatrix = new (0, _three.Matrix4)();
-class DragControls extends (0, _three.EventDispatcher) {
-    constructor(_objects, _camera, _domElement){
-        super();
-        _domElement.style.touchAction = "none"; // disable touch scroll
-        let _selected = null, _hovered = null;
-        const _intersections = [];
-        //
-        const scope = this;
-        function activate() {
-            _domElement.addEventListener("pointermove", onPointerMove);
-            _domElement.addEventListener("pointerdown", onPointerDown);
-            _domElement.addEventListener("pointerup", onPointerCancel);
-            _domElement.addEventListener("pointerleave", onPointerCancel);
-        }
-        function deactivate() {
-            _domElement.removeEventListener("pointermove", onPointerMove);
-            _domElement.removeEventListener("pointerdown", onPointerDown);
-            _domElement.removeEventListener("pointerup", onPointerCancel);
-            _domElement.removeEventListener("pointerleave", onPointerCancel);
-            _domElement.style.cursor = "";
-        }
-        function dispose() {
-            deactivate();
-        }
-        function getObjects() {
-            return _objects;
-        }
-        function getRaycaster() {
-            return _raycaster;
-        }
-        function onPointerMove(event) {
-            if (scope.enabled === false) return;
-            updatePointer(event);
-            _raycaster.setFromCamera(_pointer, _camera);
-            if (_selected) {
-                if (_raycaster.ray.intersectPlane(_plane, _intersection)) _selected.position.copy(_intersection.sub(_offset).applyMatrix4(_inverseMatrix));
-                scope.dispatchEvent({
-                    type: "drag",
-                    object: _selected
-                });
-                return;
-            }
-            // hover support
-            if (event.pointerType === "mouse" || event.pointerType === "pen") {
-                _intersections.length = 0;
-                _raycaster.setFromCamera(_pointer, _camera);
-                _raycaster.intersectObjects(_objects, true, _intersections);
-                if (_intersections.length > 0) {
-                    const object = _intersections[0].object;
-                    _plane.setFromNormalAndCoplanarPoint(_camera.getWorldDirection(_plane.normal), _worldPosition.setFromMatrixPosition(object.matrixWorld));
-                    if (_hovered !== object && _hovered !== null) {
-                        scope.dispatchEvent({
-                            type: "hoveroff",
-                            object: _hovered
-                        });
-                        _domElement.style.cursor = "auto";
-                        _hovered = null;
-                    }
-                    if (_hovered !== object) {
-                        scope.dispatchEvent({
-                            type: "hoveron",
-                            object: object
-                        });
-                        _domElement.style.cursor = "pointer";
-                        _hovered = object;
-                    }
-                } else if (_hovered !== null) {
-                    scope.dispatchEvent({
-                        type: "hoveroff",
-                        object: _hovered
-                    });
-                    _domElement.style.cursor = "auto";
-                    _hovered = null;
-                }
-            }
-        }
-        function onPointerDown(event) {
-            if (scope.enabled === false) return;
-            updatePointer(event);
-            _intersections.length = 0;
-            _raycaster.setFromCamera(_pointer, _camera);
-            _raycaster.intersectObjects(_objects, true, _intersections);
-            if (_intersections.length > 0) {
-                _selected = scope.transformGroup === true ? _objects[0] : _intersections[0].object;
-                _plane.setFromNormalAndCoplanarPoint(_camera.getWorldDirection(_plane.normal), _worldPosition.setFromMatrixPosition(_selected.matrixWorld));
-                if (_raycaster.ray.intersectPlane(_plane, _intersection)) {
-                    _inverseMatrix.copy(_selected.parent.matrixWorld).invert();
-                    _offset.copy(_intersection).sub(_worldPosition.setFromMatrixPosition(_selected.matrixWorld));
-                }
-                _domElement.style.cursor = "move";
-                scope.dispatchEvent({
-                    type: "dragstart",
-                    object: _selected
-                });
-            }
-        }
-        function onPointerCancel() {
-            if (scope.enabled === false) return;
-            if (_selected) {
-                scope.dispatchEvent({
-                    type: "dragend",
-                    object: _selected
-                });
-                _selected = null;
-            }
-            _domElement.style.cursor = _hovered ? "pointer" : "auto";
-        }
-        function updatePointer(event) {
-            const rect = _domElement.getBoundingClientRect();
-            _pointer.x = (event.clientX - rect.left) / rect.width * 2 - 1;
-            _pointer.y = -(event.clientY - rect.top) / rect.height * 2 + 1;
-        }
-        activate();
-        // API
-        this.enabled = true;
-        this.transformGroup = false;
-        this.activate = activate;
-        this.deactivate = deactivate;
-        this.dispose = dispose;
-        this.getObjects = getObjects;
-        this.getRaycaster = getRaycaster;
-    }
-}
-
 },{"three":"ktPTu","@parcel/transformer-js/src/esmodule-helpers.js":"jrXSY"}],"3tWLO":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
@@ -36607,6 +36586,43 @@ class CSS2DRenderer {
     }
 }
 
-},{"three":"ktPTu","@parcel/transformer-js/src/esmodule-helpers.js":"jrXSY"}]},["2bhi0","goJYj"], "goJYj", "parcelRequire3be5")
+},{"three":"ktPTu","@parcel/transformer-js/src/esmodule-helpers.js":"jrXSY"}],"4TO1x":[function(require,module,exports) {
+module.exports = require("560d8d717262241f").getBundleURL("e6MYJ") + "zAnatomy-OnlyHead.1027e885.fbx" + "?" + Date.now();
+
+},{"560d8d717262241f":"ajxAx"}],"ajxAx":[function(require,module,exports) {
+"use strict";
+var bundleURL = {};
+function getBundleURLCached(id) {
+    var value = bundleURL[id];
+    if (!value) {
+        value = getBundleURL();
+        bundleURL[id] = value;
+    }
+    return value;
+}
+function getBundleURL() {
+    try {
+        throw new Error();
+    } catch (err) {
+        var matches = ("" + err.stack).match(/(https?|file|ftp|(chrome|moz|safari-web)-extension):\/\/[^)\n]+/g);
+        if (matches) // The first two stack frames will be this function and getBundleURLCached.
+        // Use the 3rd one, which will be a runtime in the original bundle.
+        return getBaseURL(matches[2]);
+    }
+    return "/";
+}
+function getBaseURL(url) {
+    return ("" + url).replace(/^((?:https?|file|ftp|(chrome|moz|safari-web)-extension):\/\/.+)\/[^/]+$/, "$1") + "/";
+} // TODO: Replace uses with `new URL(url).origin` when ie11 is no longer supported.
+function getOrigin(url) {
+    var matches = ("" + url).match(/(https?|file|ftp|(chrome|moz|safari-web)-extension):\/\/[^/]+/);
+    if (!matches) throw new Error("Origin not found");
+    return matches[0];
+}
+exports.getBundleURL = getBundleURLCached;
+exports.getBaseURL = getBaseURL;
+exports.getOrigin = getOrigin;
+
+},{}]},["2bhi0","goJYj"], "goJYj", "parcelRequire3be5")
 
 //# sourceMappingURL=index.64a4978e.js.map

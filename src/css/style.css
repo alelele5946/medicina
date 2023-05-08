@@ -147,7 +147,30 @@ body {
     position: relative;
     transition: all 500ms ease;
     transform: translateX(-100%);
+    overflow-y: auto; 
+    overflow-x: hidden;
+    max-height: 100vh; 
 }
+
+/* Estilos para la barra de desplazamiento del menú lateral */
+.cont-menu::-webkit-scrollbar {
+    width: 10px; /* Ancho de la barra de desplazamiento */
+}
+
+.cont-menu::-webkit-scrollbar-track {
+    background: #2c2c2c; /* Color de fondo de la pista de la barra de desplazamiento */
+    border-radius: 5px; /* Ajusta el borde redondeado de la pista */
+}
+
+.cont-menu::-webkit-scrollbar-thumb {
+    background: #6a6a6a; /* Color de la barra de desplazamiento */
+    border-radius: 5px; /* Ajusta el borde redondeado de la barra de desplazamiento */
+}
+
+.cont-menu::-webkit-scrollbar-thumb:hover {
+    background: #888; /* Color de la barra de desplazamiento al pasar el cursor */
+}
+
 #btn-menu:checked ~ .container-menu .cont-menu{
     transform: translateX(0%);
 }

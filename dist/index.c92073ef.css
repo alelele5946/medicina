@@ -147,10 +147,31 @@ body {
   width: 100%;
   max-width: 250px;
   height: 300vh;
+  max-height: 100vh;
   background: #1c1c1c;
   transition: all .5s;
   position: relative;
+  overflow-x: hidden;
+  overflow-y: auto;
   transform: translateX(-100%);
+}
+
+.cont-menu::-webkit-scrollbar {
+  width: 10px;
+}
+
+.cont-menu::-webkit-scrollbar-track {
+  background: #2c2c2c;
+  border-radius: 5px;
+}
+
+.cont-menu::-webkit-scrollbar-thumb {
+  background: #6a6a6a;
+  border-radius: 5px;
+}
+
+.cont-menu::-webkit-scrollbar-thumb:hover {
+  background: #888;
 }
 
 #btn-menu:checked ~ .container-menu .cont-menu {
