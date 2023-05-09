@@ -568,6 +568,7 @@ let raycasterEnabled = false; // raycaster al principio desactivado , se activa 
 const raycaster = new _three.Raycaster();
 const mouse = new _three.Vector2();
 const skeletonUrl = new URL(require("6ea6ecea7cab1026"));
+console.log("tuttol la pera con la papaya", skeletonUrl);
 let busto; // referencia al busto
 let isObjectSelected = false; //booleano para saber si hay un objeto seleccionado o no
 let selectedPart; //poder acceder a la parte seleccionada en cualquier momento
