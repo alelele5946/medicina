@@ -10,7 +10,7 @@ let partesCuerpo = []; // array donde meto las partes del cuerpo
 let raycasterEnabled = false; // raycaster al principio desactivado , se activa al habilitarlo con el boton
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
-const skeletonUrl = new URL('../models/zAnatomy-OnlyHead.fbx', import.meta.url);
+const skeletonUrl = new URL('medicina/models/zAnatomy-OnlyHead.fbx', import.meta.url);
 console.log("tuttol la pera con la papaya",skeletonUrl);
 let busto; // referencia al busto
 let isObjectSelected = false; //booleano para saber si hay un objeto seleccionado o no
