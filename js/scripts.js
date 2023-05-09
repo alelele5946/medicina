@@ -332,7 +332,7 @@ var idsObjetos = [];
 var botonesContainer = document.getElementById('botones-container');
 
 // loader fbx---------------------------------------------------------------------------
-const fbxLoader = new FBXLoader()
+const fbxLoader = new FBXLoader();
 fbxLoader.load(
     skeletonUrl.href,
     
