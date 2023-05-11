@@ -2,7 +2,7 @@
 import * as THREE from 'three';
 //import * as TWEEN from 'tween';
 //import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls.js';
-import {DragControls} from 'medicina/js/modules/DragControls.js';
+import {DragControls} from './js/modules/DragControls.js';
 //import {FBXLoader} from 'three/examples/jsm/loaders/FBXLoader.js';
 //import {CSS2DRenderer, CSS2DObject} from 'three/examples/jsm/renderers/CSS2DRenderer';
 import { OrbitControls } from 'three/OrbitControls';
