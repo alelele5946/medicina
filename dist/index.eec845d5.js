@@ -560,9 +560,12 @@ function hmrAccept(bundle, id) {
 /*Imports*/ var _three = require("three");
 //import * as TWEEN from 'tween';
 var _orbitControlsJs = require("three/examples/jsm/controls/OrbitControls.js");
-var _dragControls = require("../js/modules/DragControls");
+var _dragControlsJs = require("./modules/DragControls.js");
 var _fbxloaderJs = require("three/examples/jsm/loaders/FBXLoader.js");
 var _css2Drenderer = require("three/examples/jsm/renderers/CSS2DRenderer");
+//import { OrbitControls } from 'three/OrbitControls';
+//import { FBXLoader } from 'three/FBXLoader';
+//import { CSS2DRenderer, CSS2DObject } from 'three/CSS2DRenderer';
 let partesCuerpo = []; // array donde meto las partes del cuerpo
 let raycasterEnabled = false; // raycaster al principio desactivado , se activa al habilitarlo con el boton
 const raycaster = new _three.Raycaster();
@@ -653,7 +656,7 @@ labelRenderer.domElement.style.pointerEvents = "none";
 document.body.appendChild(labelRenderer.domElement);
 labelRenderer.setSize(window.innerWidth, window.innerHeight);
 //---------------------------------------------------
-const dragControls = new (0, _dragControls.DragControls)(objetosControlados, camera, renderer.domElement);
+const dragControls = new (0, _dragControlsJs.DragControls)(objetosControlados, camera, renderer.domElement);
 dragControls.enabled = false;
 dragControls.addEventListener("dragstart", function(event) {
     console.log("dragstart", event.object);
@@ -792,8 +795,53 @@ const sLightHelper = new _three.SpotLightHelper(spotLight);
 var botones = [];
 var idsObjetos = [];
 var botonesContainer = document.getElementById("botones-container");
-// loader fbx---------------------------------------------------------------------------
-const fbxLoader = new (0, _fbxloaderJs.FBXLoader)();
+// Crear un administrador de carga
+let manager = new _three.LoadingManager();
+// Crear una barra de carga en HTML
+let progressBar = document.createElement("div");
+progressBar.style.width = "0%";
+progressBar.style.height = "20px";
+progressBar.style.background = "#4CAF50";
+progressBar.style.borderRadius = "10px";
+progressBar.style.transition = "width 0.2s ease-in-out";
+let progressContainer = document.createElement("div");
+progressContainer.style.width = "50%";
+progressContainer.style.height = "20px";
+progressContainer.style.background = "#CCC";
+progressContainer.style.margin = "auto";
+progressContainer.style.position = "absolute";
+progressContainer.style.top = "0";
+progressContainer.style.bottom = "0";
+progressContainer.style.left = "0";
+progressContainer.style.right = "0";
+progressContainer.style.borderRadius = "10px";
+progressContainer.appendChild(progressBar);
+// Crear un texto para mostrar el porcentaje de carga
+let progressText = document.createElement("div");
+progressText.style.position = "absolute";
+progressText.style.top = "50%";
+progressText.style.left = "50%";
+progressText.style.transform = "translate(-50%, -50%)";
+progressText.style.color = "#000";
+progressText.style.fontFamily = "Arial, sans-serif";
+progressContainer.appendChild(progressText);
+document.body.appendChild(progressContainer);
+// Agregar los manejadores de carga
+manager.onProgress = function(url, itemsLoaded, itemsTotal) {
+    // Actualizar la barra de carga
+    let progress = itemsLoaded / itemsTotal * 100;
+    progressBar.style.width = progress + "%";
+    progressText.innerHTML = Math.round(progress) + "%";
+};
+manager.onLoad = function() {
+    // Quitar la barra de carga cuando se haya terminado
+    progressContainer.style.display = "none";
+};
+manager.onError = function(url) {
+    console.log("Hubo un error al cargar " + url);
+};
+// Loader con el administrador de carga
+const fbxLoader = new (0, _fbxloaderJs.FBXLoader)(manager);
 fbxLoader.load(skeletonUrl.href, // funcion para recorrer objeto-----------------------------------------------------------------
 (object)=>{
     let count = 0;
@@ -1094,7 +1142,7 @@ function animate() {
 }
 renderer.setAnimationLoop(animate);
 
-},{"three":"ktPTu","three/examples/jsm/controls/OrbitControls.js":"7mqRv","../js/modules/DragControls":"dVTfC","three/examples/jsm/loaders/FBXLoader.js":"e0BdD","three/examples/jsm/renderers/CSS2DRenderer":"3tWLO","6ea6ecea7cab1026":"9369C"}],"ktPTu":[function(require,module,exports) {
+},{"three":"ktPTu","./modules/DragControls.js":"dVTfC","6ea6ecea7cab1026":"9369C","three/examples/jsm/controls/OrbitControls.js":"7mqRv","three/examples/jsm/loaders/FBXLoader.js":"e0BdD","three/examples/jsm/renderers/CSS2DRenderer":"3tWLO"}],"ktPTu":[function(require,module,exports) {
 /**
  * @license
  * Copyright 2010-2023 Three.js Authors
@@ -30527,6 +30575,179 @@ exports.export = function(dest, destName, get) {
     });
 };
 
+},{}],"dVTfC":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "DragControls", ()=>DragControls);
+var _three = require("three");
+const _plane = new (0, _three.Plane)();
+const _raycaster = new (0, _three.Raycaster)();
+const _pointer = new (0, _three.Vector2)();
+const _offset = new (0, _three.Vector3)();
+const _intersection = new (0, _three.Vector3)();
+const _worldPosition = new (0, _three.Vector3)();
+const _inverseMatrix = new (0, _three.Matrix4)();
+class DragControls extends (0, _three.EventDispatcher) {
+    constructor(_objects, _camera, _domElement){
+        super();
+        _domElement.style.touchAction = "none"; // disable touch scroll
+        let _selected = null, _hovered = null;
+        const _intersections = [];
+        //
+        const scope = this;
+        function activate() {
+            _domElement.addEventListener("pointermove", onPointerMove);
+            _domElement.addEventListener("pointerdown", onPointerDown);
+            _domElement.addEventListener("pointerup", onPointerCancel);
+            _domElement.addEventListener("pointerleave", onPointerCancel);
+        }
+        function deactivate() {
+            _domElement.removeEventListener("pointermove", onPointerMove);
+            _domElement.removeEventListener("pointerdown", onPointerDown);
+            _domElement.removeEventListener("pointerup", onPointerCancel);
+            _domElement.removeEventListener("pointerleave", onPointerCancel);
+            _domElement.style.cursor = "";
+        }
+        function dispose() {
+            deactivate();
+        }
+        function getObjects() {
+            return _objects;
+        }
+        function getRaycaster() {
+            return _raycaster;
+        }
+        function onPointerMove(event) {
+            if (scope.enabled === false) return;
+            updatePointer(event);
+            _raycaster.setFromCamera(_pointer, _camera);
+            if (_selected) {
+                if (_raycaster.ray.intersectPlane(_plane, _intersection)) _selected.position.copy(_intersection.sub(_offset).applyMatrix4(_inverseMatrix));
+                scope.dispatchEvent({
+                    type: "drag",
+                    object: _selected
+                });
+                return;
+            }
+            // hover support
+            if (event.pointerType === "mouse" || event.pointerType === "pen") {
+                _intersections.length = 0;
+                _raycaster.setFromCamera(_pointer, _camera);
+                _raycaster.intersectObjects(_objects, true, _intersections);
+                if (_intersections.length > 0) {
+                    const object = _intersections[0].object;
+                    _plane.setFromNormalAndCoplanarPoint(_camera.getWorldDirection(_plane.normal), _worldPosition.setFromMatrixPosition(object.matrixWorld));
+                    if (_hovered !== object && _hovered !== null) {
+                        scope.dispatchEvent({
+                            type: "hoveroff",
+                            object: _hovered
+                        });
+                        _domElement.style.cursor = "auto";
+                        _hovered = null;
+                    }
+                    if (_hovered !== object) {
+                        scope.dispatchEvent({
+                            type: "hoveron",
+                            object: object
+                        });
+                        _domElement.style.cursor = "pointer";
+                        _hovered = object;
+                    }
+                } else if (_hovered !== null) {
+                    scope.dispatchEvent({
+                        type: "hoveroff",
+                        object: _hovered
+                    });
+                    _domElement.style.cursor = "auto";
+                    _hovered = null;
+                }
+            }
+        }
+        function onPointerDown(event) {
+            if (scope.enabled === false) return;
+            updatePointer(event);
+            _intersections.length = 0;
+            _raycaster.setFromCamera(_pointer, _camera);
+            _raycaster.intersectObjects(_objects, true, _intersections);
+            if (_intersections.length > 0) {
+                _selected = scope.transformGroup === true ? _objects[0] : _intersections[0].object;
+                _plane.setFromNormalAndCoplanarPoint(_camera.getWorldDirection(_plane.normal), _worldPosition.setFromMatrixPosition(_selected.matrixWorld));
+                if (_raycaster.ray.intersectPlane(_plane, _intersection)) {
+                    _inverseMatrix.copy(_selected.parent.matrixWorld).invert();
+                    _offset.copy(_intersection).sub(_worldPosition.setFromMatrixPosition(_selected.matrixWorld));
+                }
+                _domElement.style.cursor = "move";
+                scope.dispatchEvent({
+                    type: "dragstart",
+                    object: _selected
+                });
+            }
+        }
+        function onPointerCancel() {
+            if (scope.enabled === false) return;
+            if (_selected) {
+                scope.dispatchEvent({
+                    type: "dragend",
+                    object: _selected
+                });
+                _selected = null;
+            }
+            _domElement.style.cursor = _hovered ? "pointer" : "auto";
+        }
+        function updatePointer(event) {
+            const rect = _domElement.getBoundingClientRect();
+            _pointer.x = (event.clientX - rect.left) / rect.width * 2 - 1;
+            _pointer.y = -(event.clientY - rect.top) / rect.height * 2 + 1;
+        }
+        activate();
+        // API
+        this.enabled = true;
+        this.transformGroup = false;
+        this.activate = activate;
+        this.deactivate = deactivate;
+        this.dispose = dispose;
+        this.getObjects = getObjects;
+        this.getRaycaster = getRaycaster;
+    }
+}
+
+},{"three":"ktPTu","@parcel/transformer-js/src/esmodule-helpers.js":"jrXSY"}],"9369C":[function(require,module,exports) {
+module.exports = require("ead02a4fd7e5b105").getBundleURL("f2eg4") + "zAnatomy-OnlyHead.e4f0323c.fbx" + "?" + Date.now();
+
+},{"ead02a4fd7e5b105":"ajxAx"}],"ajxAx":[function(require,module,exports) {
+"use strict";
+var bundleURL = {};
+function getBundleURLCached(id) {
+    var value = bundleURL[id];
+    if (!value) {
+        value = getBundleURL();
+        bundleURL[id] = value;
+    }
+    return value;
+}
+function getBundleURL() {
+    try {
+        throw new Error();
+    } catch (err) {
+        var matches = ("" + err.stack).match(/(https?|file|ftp|(chrome|moz|safari-web)-extension):\/\/[^)\n]+/g);
+        if (matches) // The first two stack frames will be this function and getBundleURLCached.
+        // Use the 3rd one, which will be a runtime in the original bundle.
+        return getBaseURL(matches[2]);
+    }
+    return "/";
+}
+function getBaseURL(url) {
+    return ("" + url).replace(/^((?:https?|file|ftp|(chrome|moz|safari-web)-extension):\/\/.+)\/[^/]+$/, "$1") + "/";
+} // TODO: Replace uses with `new URL(url).origin` when ie11 is no longer supported.
+function getOrigin(url) {
+    var matches = ("" + url).match(/(https?|file|ftp|(chrome|moz|safari-web)-extension):\/\/[^/]+/);
+    if (!matches) throw new Error("Origin not found");
+    return matches[0];
+}
+exports.getBundleURL = getBundleURLCached;
+exports.getBaseURL = getBaseURL;
+exports.getOrigin = getOrigin;
+
 },{}],"7mqRv":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
@@ -31219,142 +31440,6 @@ class MapControls extends OrbitControls {
         this.mouseButtons.RIGHT = (0, _three.MOUSE).ROTATE;
         this.touches.ONE = (0, _three.TOUCH).PAN;
         this.touches.TWO = (0, _three.TOUCH).DOLLY_ROTATE;
-    }
-}
-
-},{"three":"ktPTu","@parcel/transformer-js/src/esmodule-helpers.js":"jrXSY"}],"dVTfC":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "DragControls", ()=>DragControls);
-var _three = require("three");
-const _plane = new (0, _three.Plane)();
-const _raycaster = new (0, _three.Raycaster)();
-const _pointer = new (0, _three.Vector2)();
-const _offset = new (0, _three.Vector3)();
-const _intersection = new (0, _three.Vector3)();
-const _worldPosition = new (0, _three.Vector3)();
-const _inverseMatrix = new (0, _three.Matrix4)();
-class DragControls extends (0, _three.EventDispatcher) {
-    constructor(_objects, _camera, _domElement){
-        super();
-        _domElement.style.touchAction = "none"; // disable touch scroll
-        let _selected = null, _hovered = null;
-        const _intersections = [];
-        //
-        const scope = this;
-        function activate() {
-            _domElement.addEventListener("pointermove", onPointerMove);
-            _domElement.addEventListener("pointerdown", onPointerDown);
-            _domElement.addEventListener("pointerup", onPointerCancel);
-            _domElement.addEventListener("pointerleave", onPointerCancel);
-        }
-        function deactivate() {
-            _domElement.removeEventListener("pointermove", onPointerMove);
-            _domElement.removeEventListener("pointerdown", onPointerDown);
-            _domElement.removeEventListener("pointerup", onPointerCancel);
-            _domElement.removeEventListener("pointerleave", onPointerCancel);
-            _domElement.style.cursor = "";
-        }
-        function dispose() {
-            deactivate();
-        }
-        function getObjects() {
-            return _objects;
-        }
-        function getRaycaster() {
-            return _raycaster;
-        }
-        function onPointerMove(event) {
-            if (scope.enabled === false) return;
-            updatePointer(event);
-            _raycaster.setFromCamera(_pointer, _camera);
-            if (_selected) {
-                if (_raycaster.ray.intersectPlane(_plane, _intersection)) _selected.position.copy(_intersection.sub(_offset).applyMatrix4(_inverseMatrix));
-                scope.dispatchEvent({
-                    type: "drag",
-                    object: _selected
-                });
-                return;
-            }
-            // hover support
-            if (event.pointerType === "mouse" || event.pointerType === "pen") {
-                _intersections.length = 0;
-                _raycaster.setFromCamera(_pointer, _camera);
-                _raycaster.intersectObjects(_objects, true, _intersections);
-                if (_intersections.length > 0) {
-                    const object = _intersections[0].object;
-                    _plane.setFromNormalAndCoplanarPoint(_camera.getWorldDirection(_plane.normal), _worldPosition.setFromMatrixPosition(object.matrixWorld));
-                    if (_hovered !== object && _hovered !== null) {
-                        scope.dispatchEvent({
-                            type: "hoveroff",
-                            object: _hovered
-                        });
-                        _domElement.style.cursor = "auto";
-                        _hovered = null;
-                    }
-                    if (_hovered !== object) {
-                        scope.dispatchEvent({
-                            type: "hoveron",
-                            object: object
-                        });
-                        _domElement.style.cursor = "pointer";
-                        _hovered = object;
-                    }
-                } else if (_hovered !== null) {
-                    scope.dispatchEvent({
-                        type: "hoveroff",
-                        object: _hovered
-                    });
-                    _domElement.style.cursor = "auto";
-                    _hovered = null;
-                }
-            }
-        }
-        function onPointerDown(event) {
-            if (scope.enabled === false) return;
-            updatePointer(event);
-            _intersections.length = 0;
-            _raycaster.setFromCamera(_pointer, _camera);
-            _raycaster.intersectObjects(_objects, true, _intersections);
-            if (_intersections.length > 0) {
-                _selected = scope.transformGroup === true ? _objects[0] : _intersections[0].object;
-                _plane.setFromNormalAndCoplanarPoint(_camera.getWorldDirection(_plane.normal), _worldPosition.setFromMatrixPosition(_selected.matrixWorld));
-                if (_raycaster.ray.intersectPlane(_plane, _intersection)) {
-                    _inverseMatrix.copy(_selected.parent.matrixWorld).invert();
-                    _offset.copy(_intersection).sub(_worldPosition.setFromMatrixPosition(_selected.matrixWorld));
-                }
-                _domElement.style.cursor = "move";
-                scope.dispatchEvent({
-                    type: "dragstart",
-                    object: _selected
-                });
-            }
-        }
-        function onPointerCancel() {
-            if (scope.enabled === false) return;
-            if (_selected) {
-                scope.dispatchEvent({
-                    type: "dragend",
-                    object: _selected
-                });
-                _selected = null;
-            }
-            _domElement.style.cursor = _hovered ? "pointer" : "auto";
-        }
-        function updatePointer(event) {
-            const rect = _domElement.getBoundingClientRect();
-            _pointer.x = (event.clientX - rect.left) / rect.width * 2 - 1;
-            _pointer.y = -(event.clientY - rect.top) / rect.height * 2 + 1;
-        }
-        activate();
-        // API
-        this.enabled = true;
-        this.transformGroup = false;
-        this.activate = activate;
-        this.deactivate = deactivate;
-        this.dispose = dispose;
-        this.getObjects = getObjects;
-        this.getRaycaster = getRaycaster;
     }
 }
 
@@ -36587,43 +36672,6 @@ class CSS2DRenderer {
     }
 }
 
-},{"three":"ktPTu","@parcel/transformer-js/src/esmodule-helpers.js":"jrXSY"}],"9369C":[function(require,module,exports) {
-module.exports = require("ead02a4fd7e5b105").getBundleURL("f2eg4") + "zAnatomy-OnlyHead.e4f0323c.fbx" + "?" + Date.now();
-
-},{"ead02a4fd7e5b105":"ajxAx"}],"ajxAx":[function(require,module,exports) {
-"use strict";
-var bundleURL = {};
-function getBundleURLCached(id) {
-    var value = bundleURL[id];
-    if (!value) {
-        value = getBundleURL();
-        bundleURL[id] = value;
-    }
-    return value;
-}
-function getBundleURL() {
-    try {
-        throw new Error();
-    } catch (err) {
-        var matches = ("" + err.stack).match(/(https?|file|ftp|(chrome|moz|safari-web)-extension):\/\/[^)\n]+/g);
-        if (matches) // The first two stack frames will be this function and getBundleURLCached.
-        // Use the 3rd one, which will be a runtime in the original bundle.
-        return getBaseURL(matches[2]);
-    }
-    return "/";
-}
-function getBaseURL(url) {
-    return ("" + url).replace(/^((?:https?|file|ftp|(chrome|moz|safari-web)-extension):\/\/.+)\/[^/]+$/, "$1") + "/";
-} // TODO: Replace uses with `new URL(url).origin` when ie11 is no longer supported.
-function getOrigin(url) {
-    var matches = ("" + url).match(/(https?|file|ftp|(chrome|moz|safari-web)-extension):\/\/[^/]+/);
-    if (!matches) throw new Error("Origin not found");
-    return matches[0];
-}
-exports.getBundleURL = getBundleURLCached;
-exports.getBaseURL = getBaseURL;
-exports.getOrigin = getOrigin;
-
-},{}]},["3NGoH","c6dUj"], "c6dUj", "parcelRequire3be5")
+},{"three":"ktPTu","@parcel/transformer-js/src/esmodule-helpers.js":"jrXSY"}]},["3NGoH","c6dUj"], "c6dUj", "parcelRequire3be5")
 
 //# sourceMappingURL=index.eec845d5.js.map

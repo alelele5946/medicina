@@ -1,13 +1,13 @@
 /*Imports*/
 import * as THREE from 'three';
 //import * as TWEEN from 'tween';
-//import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls.js';
+import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls.js';
 import {DragControls} from './modules/DragControls.js';
-//import {FBXLoader} from 'three/examples/jsm/loaders/FBXLoader.js';
-//import {CSS2DRenderer, CSS2DObject} from 'three/examples/jsm/renderers/CSS2DRenderer';
-import { OrbitControls } from 'three/OrbitControls';
-import { FBXLoader } from 'three/FBXLoader';
-import { CSS2DRenderer, CSS2DObject } from 'three/CSS2DRenderer';
+import {FBXLoader} from 'three/examples/jsm/loaders/FBXLoader.js';
+import {CSS2DRenderer, CSS2DObject} from 'three/examples/jsm/renderers/CSS2DRenderer';
+//import { OrbitControls } from 'three/OrbitControls';
+//import { FBXLoader } from 'three/FBXLoader';
+//import { CSS2DRenderer, CSS2DObject } from 'three/CSS2DRenderer';
 
 let partesCuerpo = []; // array donde meto las partes del cuerpo
 let raycasterEnabled = false; // raycaster al principio desactivado , se activa al habilitarlo con el boton
@@ -336,8 +336,66 @@ var botones = [];
 var idsObjetos = [];
 var botonesContainer = document.getElementById('botones-container');
 
-// loader fbx---------------------------------------------------------------------------
-const fbxLoader = new FBXLoader();
+// Crear un administrador de carga
+let manager = new THREE.LoadingManager();
+
+// Crear una barra de carga en HTML
+let progressBar = document.createElement('div');
+progressBar.style.width = '0%';
+progressBar.style.height = '20px';
+progressBar.style.background = '#4CAF50';
+progressBar.style.borderRadius = '10px';
+progressBar.style.transition = 'width 0.2s ease-in-out';
+
+let progressContainer = document.createElement('div');
+progressContainer.style.width = '50%';
+progressContainer.style.height = '20px';
+progressContainer.style.background = '#CCC';
+progressContainer.style.margin = 'auto';
+progressContainer.style.position = 'absolute';
+progressContainer.style.top = '0';
+progressContainer.style.bottom = '0';
+progressContainer.style.left = '0';
+progressContainer.style.right = '0';
+progressContainer.style.borderRadius = '10px';
+progressContainer.appendChild(progressBar);
+
+// Crear un texto para mostrar el porcentaje de carga
+let progressText = document.createElement('div');
+progressText.style.position = 'absolute';
+progressText.style.top = '50%';
+progressText.style.left = '50%';
+progressText.style.transform = 'translate(-50%, -50%)';
+progressText.style.color = '#000';
+progressText.style.fontFamily = 'Arial, sans-serif';
+
+progressContainer.appendChild(progressText);
+
+document.body.appendChild(progressContainer);
+
+// Agregar los manejadores de carga
+manager.onProgress = function (url, itemsLoaded, itemsTotal) {
+    // Actualizar la barra de carga
+    let progress = itemsLoaded / itemsTotal * 100;
+    progressBar.style.width = progress + '%';
+    progressText.innerHTML = Math.round(progress) + '%';
+};
+
+manager.onLoad = function () {
+    // Quitar la barra de carga cuando se haya terminado
+    progressContainer.style.display = 'none';
+};
+
+manager.onError = function (url) {
+    console.log('Hubo un error al cargar ' + url);
+};
+
+// Loader con el administrador de carga
+const fbxLoader = new FBXLoader(manager);
+
+
+
+
 fbxLoader.load(
     skeletonUrl.href,
     
