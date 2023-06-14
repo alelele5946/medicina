@@ -1,13 +1,13 @@
 /*Imports*/
 import * as THREE from 'three';
 //import * as TWEEN from 'tween';
-//import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls.js';
+import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls.js';
 import {DragControls} from './modules/DragControls.js';
-//import {FBXLoader} from 'three/examples/jsm/loaders/FBXLoader.js';
-//import {CSS2DRenderer, CSS2DObject} from 'three/examples/jsm/renderers/CSS2DRenderer';
-import { OrbitControls } from 'three/OrbitControls';
-import { FBXLoader } from 'three/FBXLoader';
-import { CSS2DRenderer, CSS2DObject } from 'three/CSS2DRenderer';
+import {FBXLoader} from 'three/examples/jsm/loaders/FBXLoader.js';
+import {CSS2DRenderer, CSS2DObject} from 'three/examples/jsm/renderers/CSS2DRenderer';
+//import { OrbitControls } from 'three/OrbitControls';
+//import { FBXLoader } from 'three/FBXLoader';
+//import { CSS2DRenderer, CSS2DObject } from 'three/CSS2DRenderer';
 
 let partesCuerpo = []; // array donde meto las partes del cuerpo
 let raycasterEnabled = false; // raycaster al principio desactivado , se activa al habilitarlo con el boton
@@ -21,6 +21,7 @@ let busto; // referencia al busto
 let isObjectSelected = false; //booleano para saber si hay un objeto seleccionado o no
 let selectedPart; //poder acceder a la parte seleccionada en cualquier momento
 let objetosControlados = []; // lista objetos de drag and drop
+let Clase1Activa = false;
 
 const toggleDragDropButton = document.getElementById('toggleDragDrop');
 let orbitControlsEnabled = true;
@@ -62,10 +63,66 @@ axisBtn.addEventListener("click", function(){
         axis = true;
 
     }
-    
-    //console.log("la funcion se llamó");
+    let cameraDirection = new THREE.Vector3();
+    camera.getWorldDirection(cameraDirection);
+    console.log("camara position", camera.position);
+    console.log("camara direction", cameraDirection);
+    // Cconsole.log("camara look", camera.lookAt)reamos un vector para la posición objetivo (0,0,0)
+let target = new THREE.Vector3(0, 0, 0);
+
+// Obtenemos la dirección en la que está mirando la cámara
+
+
+// Creamos un vector desde la cámara al objetivo
+let directionToTarget = new THREE.Vector3().subVectors(target, camera.position).normalize();
+
+// Comparamos si la dirección de la cámara es la misma que la dirección al objetivo
+/*console.log(directionToTarget)
+console.log(cameraDirection)
+if (cameraDirection.equals(directionToTarget)) {
+    console.log("La cámara está mirando al punto (0,0,0)");
+} else {
+    console.log("La cámara no está mirando al punto (0,0,0)");
+}*/
 });
 
+
+//Clase 1
+class1.addEventListener('click', function() {
+    console.log("holaaaa")
+    Clase1Activa = true;
+    // Encuentra los objetos que queremos duplicar
+    const objectToDuplicate1 = partesCuerpo.find(parte => parte.name === 'Lower_medial_incisor_r');
+    console.log(objectToDuplicate1)
+    const objectToDuplicate2 = partesCuerpo.find(parte => parte.name === 'Lower_medial_incisor_l');
+    console.log(objectToDuplicate2)
+
+    // Encuentra el objeto que queremos seleccionar
+    const objectToSelect = partesCuerpo.find(parte => parte.name === 'Mandible');
+    console.log(objectToSelect)
+
+    // Duplicar los objetos
+    if (objectToDuplicate1) {
+        const copiedPartPosition = new THREE.Vector3(20, 20, 0); // Cambia esta posición si es necesario
+        addPartCopy(objectToDuplicate1, copiedPartPosition);
+    }
+    if (objectToDuplicate2) {
+        const copiedPartPosition = new THREE.Vector3(20, 25, 0); // Cambia esta posición si es necesario
+        addPartCopy(objectToDuplicate2, copiedPartPosition);
+    }
+
+    // Seleccionar el objeto
+    if (objectToSelect) {
+        partesCuerpo.forEach((p) => { // deseleccionar todos los objetos
+            p.isSelected = false;
+        });
+        objectToSelect.isSelected = true; // seleccionar el objeto
+        animarCamara(camera, objectToSelect);
+        selectedPart = objectToSelect;
+        isObjectSelected = true;
+        showPartName(objectToSelect.name);
+    }
+});
 
 
 //Controles de las vistas
@@ -73,18 +130,32 @@ axisBtn.addEventListener("click", function(){
 upView.addEventListener("click", function(){
     camera.position.set(0,50,0);
     camera.lookAt(0,0,0);
+
+    controls.target.set(0,0,0);
+
+    // Necesitas llamar a .update() para que los cambios tengan efecto
+    controls.update();
     
     //console.log("la funcion se llamó");
 });
 frontView.addEventListener("click", function(){
     camera.position.set(0,0,50);
-    camera.lookAt(0,0,0);
+    camera.lookAt(0,-6,-1);
+    // Restablece el punto de mira (target) de OrbitControls
+    controls.target.set(0,0,0);
+
+    // Necesitas llamar a .update() para que los cambios tengan efecto
+    controls.update();
     
     //console.log("la funcion se llamó");
 });
 downView.addEventListener("click", function(){
     camera.position.set(0,-50,0);
     camera.lookAt(0,0,0);
+    controls.target.set(0,0,0);
+
+    // Necesitas llamar a .update() para que los cambios tengan efecto
+    controls.update();
     
     //console.log("la funcion se llamó");
 });
@@ -133,6 +204,8 @@ const camera = new THREE.PerspectiveCamera(
 );
 camera.position.set(0,0,50);
 //-----------------------------------------------------------------------------------------
+
+console.log("La camara esta posicionada en: ",camera.position);
 // CSS2DRenderer---------------------------------------------------------
 const labelRenderer = new CSS2DRenderer();
 labelRenderer.setSize(window.innerWidth, window.innerHeight);
@@ -145,7 +218,14 @@ labelRenderer.setSize(window.innerWidth, window.innerHeight);
 
 //---------------------------------------------------
 
+window.addEventListener('resize', function() {
+    // Actualiza el aspecto de la cámara
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
 
+    // Actualiza el tamaño del renderizador
+    renderer.setSize(window.innerWidth, window.innerHeight);
+}, false);
 
 
 
@@ -339,41 +419,9 @@ var botonesContainer = document.getElementById('botones-container');
 // Crear un administrador de carga
 let manager = new THREE.LoadingManager();
 
-// Crear una barra de carga en HTML
-let progressBar = document.createElement('div');
-progressBar.style.width = '0%';
-progressBar.style.height = '20px';
-progressBar.style.background = '#4CAF50';
-progressBar.style.borderRadius = '10px';
-progressBar.style.transition = 'width 0.2s ease-in-out';
+let progressBar = document.getElementById('progressBar');
+let progressText = document.getElementById('progressText');
 
-let progressContainer = document.createElement('div');
-progressContainer.style.width = '50%';
-progressContainer.style.height = '20px';
-progressContainer.style.background = '#CCC';
-progressContainer.style.margin = 'auto';
-progressContainer.style.position = 'absolute';
-progressContainer.style.top = '0';
-progressContainer.style.bottom = '0';
-progressContainer.style.left = '0';
-progressContainer.style.right = '0';
-progressContainer.style.borderRadius = '10px';
-progressContainer.appendChild(progressBar);
-
-// Crear un texto para mostrar el porcentaje de carga
-let progressText = document.createElement('div');
-progressText.style.position = 'absolute';
-progressText.style.top = '50%';
-progressText.style.left = '50%';
-progressText.style.transform = 'translate(-50%, -50%)';
-progressText.style.color = '#000';
-progressText.style.fontFamily = 'Arial, sans-serif';
-
-progressContainer.appendChild(progressText);
-
-document.body.appendChild(progressContainer);
-
-// Agregar los manejadores de carga
 manager.onProgress = function (url, itemsLoaded, itemsTotal) {
     // Actualizar la barra de carga
     let progress = itemsLoaded / itemsTotal * 100;
@@ -383,7 +431,8 @@ manager.onProgress = function (url, itemsLoaded, itemsTotal) {
 
 manager.onLoad = function () {
     // Quitar la barra de carga cuando se haya terminado
-    progressContainer.style.display = 'none';
+    progressBar.style.display = 'none';
+    progressText.style.display = 'none';
 };
 
 manager.onError = function (url) {
@@ -392,6 +441,8 @@ manager.onError = function (url) {
 
 // Loader con el administrador de carga
 const fbxLoader = new FBXLoader(manager);
+
+
 
 
 
@@ -641,80 +692,7 @@ function animarCamara(camara, nuevaParte) {
     console.log("nueva z", newZ);
     
     
-    /*
-    const startPosition = camara.position.clone();
-    const targetPosition = new THREE.Vector3(newX, newY, newZ);
-    const animationDuration = 2000; // Duración de la animación en milisegundos
-    const startTime = performance.now();
-
-    if (animationRequestId) {
-        cancelAnimationFrame(animationRequestId);
-    }
-
-    function animateCamera(time) {
-        const elapsedTime = time - startTime;
-        const progress = Math.min(elapsedTime / animationDuration, 1);
-
-        camara.position.lerpVectors(startPosition, targetPosition, progress);
-
-        if (progress < 1) {
-            animationRequestId = requestAnimationFrame(animateCamera);
-        } else {
-            camara.position.copy(targetPosition);
-            animationRequestId = null;
-            camara.lookAt(posicionNuevaParte);
-            console.log("hollaaaaaaa")
-            console.log(camara.position, camara.getWorldDirection(new THREE.Vector3()), posicionNuevaParte);
-        }
-    }
-
-    animationRequestId = requestAnimationFrame(animateCamera);
-    
-    */
-
-
-
-     
-
-     //camara.position.set(newX, newY, newZ);
-
-     /*
-    const startPosition = camara.position.clone();
-    const targetPosition = new THREE.Vector3(newX, newY, newZ);
-    const startDirection = camara.getWorldDirection(new THREE.Vector3()).clone();
-    const targetDirection = posicionNuevaParte.clone().sub(camara.position).normalize();
-    const animationDuration = 2000;
-    const startTime = performance.now();
-
-    if (animationRequestId) {
-        cancelAnimationFrame(animationRequestId);
-    }
-
-    
-    function animateCamera(time) {    
-        const elapsedTime = time - startTime;
-        const progress = Math.min(elapsedTime / animationDuration, 1);
-    
-        camara.position.lerpVectors(startPosition, targetPosition, progress);
-    
-        // Interpolar la dirección de la cámara
-        const currentDirection = startDirection.clone().lerp(targetDirection, progress);
-        const currentTarget = camara.position.clone().add(currentDirection);
-        camara.lookAt(currentTarget);
-    
-        if (progress < 1) {
-            animationRequestId = requestAnimationFrame(animateCamera);
-        } else {
-            // Establecer exactamente la posición y dirección objetivo al final de la animación
-            camara.position.copy(targetPosition);
-            camara.lookAt(posicionNuevaParte);
-            animationRequestId = null;
-            console.log(camara.position, camara.getWorldDirection(new THREE.Vector3()), posicionNuevaParte);
-        }
-
-    }
-
-*/   new TWEEN.Tween(camera.position)
+      new TWEEN.Tween(camera.position)
     .to(
     {
         x: newX,
@@ -727,27 +705,9 @@ function animarCamara(camara, nuevaParte) {
     .start()
     .onUpdate(()=>camera.lookAt(posicionNuevaParte));
 
-    /*new TWEEN.Tween(camara.lookAt)
-    .to(
-    {
-        x: newX,
-        y: newY,
-        z: newZ,
-    },
-    500
-    )
-    .easing(TWEEN.Easing.Cubic.Out)
-    .start()
-    }*/
-
-    //camara.position.set(newX,newY,newZ);
-    //camera.lookAt(posicionNuevaParte);
-    
+   
 }
 
-   // animationRequestId = requestAnimationFrame(animateCamera);
-     
-  //}
   
 
 

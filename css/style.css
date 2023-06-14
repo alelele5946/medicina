@@ -65,9 +65,11 @@ body {
     height: 100px;
 }
 
+
 .container .menu {
     display: flex;
     align-items: center;
+   
 }
 
 .container .menu a{
@@ -94,13 +96,21 @@ body {
     color: black;
     transition: all 0.3s ease;
     border: 2px solid transparent;
-    font-size: 15px;
+    /*font-size: 15px;*/
     margin-right: 5px;
 }
 
 .container .menu button:hover{
     border-bottom: 2px solid #c7c7c7;
-    padding-bottom: 5px;
+    /*padding-bottom: 5px;*/
+}
+
+@media screen and (max-width: 600px) {
+    .container .menu button {
+        padding: 10px; /* Disminuir el relleno para reducir el tamaño del botón */
+        font-size: 12px; /* Disminuir el tamaño de la fuente */
+        margin-right: 3px; /* Disminuir el margen */
+    }
 }
 
 
@@ -216,4 +226,17 @@ body {
     cursor: pointer;
     font-size: 18px;
 }
+
+@media (max-width: 600px) {
+    .container .menu {
+      flex-direction: column;
+      padding-top: 50vh;
+    }
+  
+    .container .menu button {
+      width: 100%;
+      margin-bottom: 10px;
+      
+    }
+  }
 /*Fin de Menù lateral*/
