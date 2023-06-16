@@ -105,11 +105,71 @@ body {
     /*padding-bottom: 5px;*/
 }
 
+.side-menu {
+    display: none;
+    position: fixed;
+    right: 0;
+    top: 0;
+    height: 100%;
+    width: 250px; /* Ajusta este valor según lo necesites */
+    background-color: #333; /* Elige tu propio color */
+    overflow: auto;
+    padding: 20px;
+    box-sizing: border-box;
+}
+.menu-toggle {
+    display: none; /* Ocultar por defecto */
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    font-size: 30px;
+    cursor: pointer;
+    z-index: 2;
+  }
+  
+  .menu {
+    transition: transform 0.3s ease; /* Añadir animación al menú */
+  }
+  
+  @media (max-width: 600px) {
+    .menu-toggle {
+      display: block; /* Mostrar el botón del menú en móviles */
+    }
+  
+    .menu {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: 80%;
+      height: 100%;
+      transform: translateX(100%); /* Mover el menú fuera de la pantalla */
+      overflow-y: auto; /* Permitir desplazamiento si el menú es más alto que la pantalla */
+      background: #fff; /* Añadir un fondo al menú */
+      box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1); /* Añadir una sombra al menú */
+      overflow-x: hidden;
+    }
+  
+    .menu.active {
+      transform: translateX(0); /* Mover el menú dentro de la pantalla cuando está activo */
+    }
+  }
+  
+
 @media screen and (max-width: 600px) {
     .container .menu button {
         padding: 10px; /* Disminuir el relleno para reducir el tamaño del botón */
         font-size: 12px; /* Disminuir el tamaño de la fuente */
         margin-right: 3px; /* Disminuir el margen */
+    }
+
+    /* Oculta el menú normal en pantallas pequeñas */
+    nav.menu {
+        display: none;
+    }
+
+    /* Muestra el menú lateral en pantallas pequeñas */
+    .side-menu {
+        display: block;
     }
 }
 
@@ -230,13 +290,27 @@ body {
 @media (max-width: 600px) {
     .container .menu {
       flex-direction: column;
-      padding-top: 50vh;
+      padding-top: 10vh;
     }
   
     .container .menu button {
-      width: 100%;
-      margin-bottom: 10px;
-      
-    }
+        display: block;
+        text-decoration: none;
+        padding: 20px;
+        color: #c7c7c7;
+        background: #1f1f1f;
+        border-left: 5px solid transparent;
+        transition: all 400ms ease;
+        width: 100%;
+        margin-bottom: 0px;
+        border: 1px solid #c7c7c7; /* Cambia el color según tu diseño */
+        
+        
+      }
+  
+      .container .menu button:hover{
+        border-left: 5px solid #c7c7c7;
+        background: #1f1f1f;
+      }
   }
 /*Fin de Menù lateral*/
