@@ -2,11 +2,11 @@
 import * as THREE from 'three';
 import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls.js';
 import {DragControls} from './modules/DragControls.js';
-import {FBXLoader} from 'three/examples/jsm/loaders/FBXLoader.js';
-import {CSS2DRenderer, CSS2DObject} from 'three/examples/jsm/renderers/CSS2DRenderer';
-//import { OrbitControls } from 'three/OrbitControls';
-//import { FBXLoader } from 'three/FBXLoader';
-//import { CSS2DRenderer, CSS2DObject } from 'three/CSS2DRenderer';
+//import {FBXLoader} from 'three/examples/jsm/loaders/FBXLoader.js';
+//import {CSS2DRenderer, CSS2DObject} from 'three/examples/jsm/renderers/CSS2DRenderer';
+import { OrbitControls } from 'three/OrbitControls';
+import { FBXLoader } from 'three/FBXLoader';
+import { CSS2DRenderer, CSS2DObject } from 'three/CSS2DRenderer';
 
 let partesCuerpo = []; // array donde meto las partes del cuerpo
 let raycasterEnabled = false; // raycaster al principio desactivado , se activa al habilitarlo con el boton
