@@ -221,7 +221,7 @@ dragControls.enabled = false;
 
 dragControls.addEventListener('dragstart', function (event) {
     console.log('dragstart', event.object);
-    currentCSSObject = createCSS2DObject('Texto por encima del objeto');
+    let currentCSSObject = createCSS2DObject('Texto por encima del objeto');
     event.object.add(currentCSSObject);   
 });
 
