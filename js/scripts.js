@@ -21,6 +21,7 @@ let Clase1noActiva = true;
 const toggleDragDropButton = document.getElementById('toggleDragDrop');
 let orbitControlsEnabled = true;
 let countClass1 = 0;
+let currentCSSObject;
 
 // Obtener referencias a los elementos HTML
 const opacitySlider = document.getElementById("opacity-slider");
@@ -221,7 +222,7 @@ dragControls.enabled = false;
 
 dragControls.addEventListener('dragstart', function (event) {
     console.log('dragstart', event.object);
-    let currentCSSObject = createCSS2DObject('Texto por encima del objeto');
+    currentCSSObject = createCSS2DObject('Texto por encima del objeto');
     event.object.add(currentCSSObject);   
 });
 
