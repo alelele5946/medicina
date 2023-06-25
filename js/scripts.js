@@ -2,11 +2,11 @@
 import * as THREE from 'three';
 import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls.js';
 import {DragControls} from './modules/DragControls.js';
-//import {FBXLoader} from 'three/examples/jsm/loaders/FBXLoader.js';
-//import {CSS2DRenderer, CSS2DObject} from 'three/examples/jsm/renderers/CSS2DRenderer';
-import { OrbitControls } from 'three/OrbitControls';
-import { FBXLoader } from 'three/FBXLoader';
-import { CSS2DRenderer, CSS2DObject } from 'three/CSS2DRenderer';
+import {FBXLoader} from 'three/examples/jsm/loaders/FBXLoader.js';
+import {CSS2DRenderer, CSS2DObject} from 'three/examples/jsm/renderers/CSS2DRenderer';
+//import { OrbitControls } from 'three/OrbitControls';
+//import { FBXLoader } from 'three/FBXLoader';
+//import { CSS2DRenderer, CSS2DObject } from 'three/CSS2DRenderer';
 
 let partesCuerpo = []; // array donde meto las partes del cuerpo
 let raycasterEnabled = false; // raycaster al principio desactivado , se activa al habilitarlo con el boton
@@ -85,6 +85,24 @@ if (cameraDirection.equals(directionToTarget)) {
 //Clase 1
 class1.addEventListener('click', function() {
     console.log("holaaaa")
+    if(!Clase1noActiva){
+        class1.classList.toggle('active');
+        Clase1noActiva = true;
+        partesCuerpo.forEach((p)=>{
+            p.isSelected = false;
+            p.visible = true;
+        })
+        updateOpacity();
+        showPartName("deselected")
+        console.log("posicion camara ahorita", camera.position);
+        console.log("hollaaaa")
+        camera.position.set(0,0,50);
+        camera.lookAt(0,0,0); // vista frontal
+        selectedPart = null;
+    }
+    else{
+
+        class1.classList.toggle('active');
     Clase1noActiva = false;
     // Encuentra los objetos que queremos duplicar
     const objectToDuplicate1 = partesCuerpo.find(parte => parte.name === 'Lower_medial_incisor_r');
@@ -112,6 +130,10 @@ class1.addEventListener('click', function() {
 
     updateOpacity();
 
+
+
+    }
+    
 });
 
 
@@ -162,6 +184,9 @@ deselect.addEventListener("click", function(){
 });
 
 
+
+
+
 toggleDragDropButton.addEventListener('click', function () {
     toggleDragDropButton.classList.toggle('active');
     orbitControlsEnabled = !orbitControlsEnabled;
@@ -177,6 +202,9 @@ toggleDragDropButton.addEventListener('click', function () {
 // renderizado --------------------------------------------------------------------------------------------
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
+// Establece el índice z y el posicionamiento de tu canvas
+//renderer.domElement.style.zIndex = '1';
+//renderer.domElement.style.position = 'absolute';
 document.body.appendChild(renderer.domElement);
 
 const scene = new THREE.Scene();
@@ -224,7 +252,7 @@ dragControls.addEventListener('dragstart', function (event) {
     currentCSSObject = createCSS2DObject('Texto por encima del objeto');
     event.object.add(currentCSSObject);   
 });
-
+/*
 dragControls.addEventListener('drag', (event) => {
     console.log('drag', event.object);
 
@@ -232,29 +260,31 @@ dragControls.addEventListener('drag', (event) => {
     const yPos = event.object.position.y;
     const zPos = event.object.position.z;
 
-    const partPos = event.object.myPosition;
+    const partPos = event.object.myPosition; // posición donde se debe colocar
     
 
     // Verifica si el objeto ha alcanzado la posición deseada
-    if ((xPos >= partPos.x-1 && xPos < partPos.x+1) && (yPos >= partPos.y-1 && yPos < partPos.y+1) ) {
+    if ((xPos >= partPos.x-1 && xPos < partPos.x+1) && (yPos >= partPos.y-1 && yPos < partPos.y+1) && (zPos >= partPos.z-1 && zPos < partPos.z+1) ) {
         // Actualiza el texto y el color del fondo del objeto según sea necesario
         if (currentCSSObject) {
             currentCSSObject.element.innerHTML = 'Posición correcta';
             changeBackgroundColor(currentCSSObject, 'green');
         }
-    } else if(((xPos >= partPos.x-3 && xPos < partPos.x+3)||(xPos <= partPos.x-1 && xPos > partPos.x+1)) && ((yPos >= partPos.y-3 && xPos < partPos.y+3)||(yPos <= partPos.y-1 && yPos > partPos.y+1))){
+    } else if(((xPos >= partPos.x-4 && xPos < partPos.x-1)||(xPos <= partPos.x+4 && xPos > partPos.x+1)) && ((yPos >= partPos.y-4 && yPos < partPos.y-1)||(yPos <= partPos.y+4 && yPos > partPos.y+1)) && ((zPos >= partPos.z-4 && zPos < partPos.z-1)||(zPos <= partPos.z+4 && zPos > partPos.z+1))){
+        console.log("posición x correcta:", partPos.x, "pos x actual: ", xPos)
+        console.log("posición y correcta:", partPos.y, "pos y actual: ", yPos)
         if (currentCSSObject) {
             currentCSSObject.element.innerHTML = 'Nos acercamos';
             changeBackgroundColor(currentCSSObject, 'orange');
         }
     }
-     else {
+     else if ((xPos < partPos.x-4) || (xPos > partPos.x+4) && (yPos < partPos.y-4) || (yPos > partPos.y+4) && (zPos < partPos.z-4) || (zPos > partPos.z+4)){
         if (currentCSSObject) {
             currentCSSObject.element.innerHTML = 'Posición incorrecta';
             changeBackgroundColor(currentCSSObject, 'red');
         }
     }
-});
+});*/
 
 
 dragControls.addEventListener('dragend', (event) => {
@@ -264,16 +294,19 @@ dragControls.addEventListener('dragend', (event) => {
         currentCSSObject = null;
     }
 
-    const xPos = event.object.position.x;
-    const yPos = event.object.position.y;
-    const zPos = event.object.position.z;
+    const { x: xPos, y: yPos, z: zPos } = event.object.position;
+    const partPos = event.object.myPosition;
+  
+    const xDistance = isInRange(xPos, partPos.x, 1, 8);
+    const yDistance = isInRange(yPos, partPos.y, 1, 8);
+    const zDistance = isInRange(zPos, partPos.z, 1, 8);
     if(selectedPart){
-        const partPos = event.object.myPosition;
+        //const partPos = event.object.myPosition;
         console.log("where i must end", event.object.myPosition);
         console.log("where i am currently", event.object.position);
 
     // Verifica si el objeto ha alcanzado la posición deseada
-    if ((xPos >= partPos.x-2 && xPos < partPos.x+2) && (yPos >= partPos.y-2 && yPos < partPos.y+2) ) {
+    if (xDistance === 'close' && yDistance === 'close' && zDistance === 'close' ) {
         // Coloca el objeto en la posición exacta
         event.object.position.set(partPos.x, partPos.y, partPos.z);
         if(countClass1 != 2){ countClass1 += 1;} 
@@ -284,6 +317,49 @@ dragControls.addEventListener('dragend', (event) => {
     if(countClass1 == 2){showPartName("¡Felicidades! Has completado la clase");}
     
 });
+
+
+dragControls.addEventListener('drag', (event) => {
+    const { x: xPos, y: yPos, z: zPos } = event.object.position;
+    const partPos = event.object.myPosition;
+  
+    const xDistance = isInRange(xPos, partPos.x, 1, 8);
+    const yDistance = isInRange(yPos, partPos.y, 1, 8);
+    const zDistance = isInRange(zPos, partPos.z, 1, 8);
+
+    console.log(`X Distance: ${xDistance}, Y Distance: ${yDistance}, Z Distance: ${zDistance}`);
+  
+    if (currentCSSObject) {
+      if (xDistance === 'far' || yDistance === 'far' || zDistance === 'far') {
+        currentCSSObject.element.innerHTML = 'Posición incorrecta';
+        changeBackgroundColor(currentCSSObject, 'red');
+      } else if (xDistance === 'close' && yDistance === 'close' && zDistance === 'close') {
+        currentCSSObject.element.innerHTML = 'Posición correcta';
+        changeBackgroundColor(currentCSSObject, 'green');
+      } else {
+        currentCSSObject.element.innerHTML = 'Nos acercamos';
+        changeBackgroundColor(currentCSSObject, 'orange');
+      }
+    }
+  });
+/*
+  else if (xDistance === 'medium' && yDistance === 'medium' && zDistance === 'medium') {
+    currentCSSObject.element.innerHTML = 'Nos acercamos';
+    changeBackgroundColor(currentCSSObject, 'orange');
+  } */
+
+
+  
+function isInRange(value, target, closeRange, farRange) {
+    console.log(`Value: ${value}, Target: ${target}, Close Range: ${closeRange}, Far Range: ${farRange}`);
+    if (value >= target - closeRange && value < target + closeRange) {
+      return 'close';
+    } else if (value >= target - farRange && value < target + farRange) {
+      return 'medium';
+    } else if (value < target - farRange || value > target + farRange) {
+      return 'far';
+    }
+  }
 
 
 
@@ -400,6 +476,7 @@ var botones = [];
 var idsObjetos = [];
 var botonesContainer = document.getElementById('botones-container');
 
+/*
 // Crear un administrador de carga
 let manager = new THREE.LoadingManager();
 
@@ -421,10 +498,24 @@ manager.onLoad = function () {
 
 manager.onError = function (url) {
     console.log('Hubo un error al cargar ' + url);
-};
+};*/
 
 // Loader con el administrador de carga
-const fbxLoader = new FBXLoader(manager);
+
+//const progressBarElement = document.getElementById('progress-bar');
+//const progressContainerElement = document.getElementById('progress-container');
+
+//progressContainerElement.style.display = 'block'; // Muestra la barra de progreso
+
+
+
+
+// Primero, obtenemos la referencia a los elementos que vamos a necesitar
+const numb = document.querySelector(".numb");
+const progressLeft = document.querySelector(".bar.left .progress");
+const progressRight = document.querySelector(".bar.right .progress");
+const circularElement = document.querySelector('.circular');
+const fbxLoader = new FBXLoader();
 
 
 
@@ -436,6 +527,11 @@ fbxLoader.load(
     
     // funcion para recorrer objeto-----------------------------------------------------------------
     (object) => {
+
+        // Aquí se maneja el modelo cargado
+        //progressContainerElement.style.display = 'none'; // Oculta la barra de progreso cuando se haya terminado de cargar el modelo
+        //const loader = document.getElementById('loader');
+        //loader.style.display = 'none';
         let count = 0;
         // ...
         partesCuerpo = [];
@@ -576,12 +672,26 @@ fbxLoader.load(
         bustoSize = Math.max(size.x, size.y, size.z);*/
         //console.log("tamaño busto",maxSize);
         busto = object; // tener referencia al busto en cualquier momento
+        circularElement.style.display = 'none';
         scene.add(object)
         
         // console.log("I arrived here")
     },
     (xhr) => {
         console.log((xhr.loaded / xhr.total) * 100 + '% loaded')
+          // Calculamos el porcentaje de progreso
+          counter = Math.floor((xhr.loaded / xhr.total) * 100);
+        
+          // Actualizamos el texto y la barra de progreso
+          numb.textContent = counter + "%";
+          if (counter <= 50) {
+              // Si el progreso es del 50% o menos, actualizamos la barra izquierda
+              progressLeft.style.transform = `rotate(${counter * 3.6}deg)`;
+          } else {
+              // Si el progreso es mayor del 50%, actualizamos las barras izquierda y derecha
+              progressLeft.style.transform = `rotate(180deg)`;
+              progressRight.style.transform = `rotate(${(counter - 50) * 3.6}deg)`;
+          }
     },
     (error) => {
         console.log(error)

@@ -21,6 +21,8 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/tween.js/20.0.3/tween.umd.js" integrity="sha512-T07MoUSqffM8IKU7WCC5DWiG56NPo4dcTuWbzbV2pJo5cUPfnteoFn2SEPgQgLpNAR7qdNyCONXz6oJG/YXMbA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </head>
 <body>
+	
+
     <header class="header">
 		<div class="container">
 		<div class="btn-menu">
@@ -38,7 +40,7 @@
 				
 				
   
-				<button id="class1" >Class1</button>
+				<button id="class1" class="toggle-btn">Class1</button>
 				<button id="deselect">deselect</button>
 				<button id="toggleDragDrop" class="toggle-btn">Toggle Drag & Drop</button>
 			</nav>
@@ -54,10 +56,9 @@
 		
 	</header>
 	<!-- Barra de carga -->
-    <div id="progressContainer" style="width: 100%; height: 5px; background: #CCC; position: absolute; top: 0;">
-        <div id="progressBar" style="width: 0%; height: 100%; background: #4CAF50;"></div>
-    </div>
-    <div id="progressText" style="position: absolute; top: 10px; left: 50%; transform: translateX(-50%); font-size: 20px; font-family: Arial, sans-serif;"></div>
+
+	
+
 	
     <input type="checkbox" id="btn-menu">
 <div class="container-menu">
@@ -69,6 +70,24 @@
 		<label for="btn-menu">✖️</label>
 	</div>
 </div>
+<div class="circular">
+	<div class="inner"></div>
+	<div class="outer"></div>
+	<div class="numb">
+	   0%
+	</div>
+	<div class="circle">
+	   <!--div class="dot">
+		  <span></span>
+	   </div-->
+	   <div class="bar left">
+		  <div class="progress"></div>
+	   </div>
+	   <div class="bar right">
+		  <div class="progress"></div>
+	   </div>
+	</div>
+ </div>
     <script src="./js/scripts.js" type="module"></script>
 </body>
 </html>
