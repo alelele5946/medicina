@@ -1,6 +1,6 @@
 /*Imports*/
 import * as THREE from 'three';
-import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls.js';
+//import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls.js';
 import {DragControls} from './modules/DragControls.js';
 import {FBXLoader} from 'three/examples/jsm/loaders/FBXLoader.js';
 import {CSS2DRenderer, CSS2DObject} from 'three/examples/jsm/renderers/CSS2DRenderer';
@@ -21,6 +21,7 @@ let Clase1noActiva = true;
 const toggleDragDropButton = document.getElementById('toggleDragDrop');
 let orbitControlsEnabled = true;
 let countClass1 = 0;
+let currentCSSObject;
 
 // Obtener referencias a los elementos HTML
 const opacitySlider = document.getElementById("opacity-slider");
