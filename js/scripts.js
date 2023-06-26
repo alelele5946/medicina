@@ -681,7 +681,7 @@ fbxLoader.load(
     (xhr) => {
         console.log((xhr.loaded / xhr.total) * 100 + '% loaded')
           // Calculamos el porcentaje de progreso
-          counter = Math.floor((xhr.loaded / xhr.total) * 100);
+          let counter = Math.floor((xhr.loaded / xhr.total) * 100);
         
           // Actualizamos el texto y la barra de progreso
           numb.textContent = counter + "%";
