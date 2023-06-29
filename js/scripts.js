@@ -2,11 +2,11 @@
 import * as THREE from 'three';
 import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls.js';
 import {DragControls} from './modules/DragControls.js';
-//import {FBXLoader} from 'three/examples/jsm/loaders/FBXLoader.js';
-//import {CSS2DRenderer, CSS2DObject} from 'three/examples/jsm/renderers/CSS2DRenderer';
-import { OrbitControls } from 'three/OrbitControls';
-import { FBXLoader } from 'three/FBXLoader';
-import { CSS2DRenderer, CSS2DObject } from 'three/CSS2DRenderer';
+import {FBXLoader} from 'three/examples/jsm/loaders/FBXLoader.js';
+import {CSS2DRenderer, CSS2DObject} from 'three/examples/jsm/renderers/CSS2DRenderer';
+//import { OrbitControls } from 'three/OrbitControls';
+//import { FBXLoader } from 'three/FBXLoader';
+//import { CSS2DRenderer, CSS2DObject } from 'three/CSS2DRenderer';
 
 let partesCuerpo = []; // array donde meto las partes del cuerpo
 let raycasterEnabled = false; // raycaster al principio desactivado , se activa al habilitarlo con el boton
@@ -251,7 +251,7 @@ const camera = new THREE.PerspectiveCamera(
 );
 camera.position.set(0,0,50);
 //-----------------------------------------------------------------------------------------
-
+/*
 // CSS2DRenderer---------------------------------------------------------
 const labelRenderer = new CSS2DRenderer();
 labelRenderer.setSize(window.innerWidth, window.innerHeight);
@@ -259,7 +259,7 @@ labelRenderer.domElement.style.position = 'absolute';
 labelRenderer.domElement.style.top = '0px';
 labelRenderer.domElement.style.pointerEvents = 'none';
 document.body.appendChild(labelRenderer.domElement);
-labelRenderer.setSize(window.innerWidth, window.innerHeight);
+labelRenderer.setSize(window.innerWidth, window.innerHeight);*/
 
 
 //---------------------------------------------------
@@ -401,11 +401,14 @@ class1.addEventListener('click', function() {
     
 });
 
+const dragLabel = document.getElementById("drag-label");
 
 dragControls.addEventListener('dragstart', function (event) {
     console.log('dragstart', event.object);
+    dragLabel.style.display = "block";
+    /*
     currentCSSObject = createCSS2DObject('Texto por encima del objeto');
-    event.object.add(currentCSSObject);   
+    event.object.add(currentCSSObject);   */
 });
 /*
 dragControls.addEventListener('drag', (event) => {
@@ -444,10 +447,12 @@ dragControls.addEventListener('drag', (event) => {
 
 dragControls.addEventListener('dragend', (event) => {
     console.log('dragend', event.object.getWorldPosition(new THREE.Vector3()));
+    dragLabel.style.display = "none";
+    /*
     if (currentCSSObject) {
         event.object.remove(currentCSSObject);
         currentCSSObject = null;
-    }
+    }*/
 
     const { x: xPos, y: yPos, z: zPos } = event.object.position;
     const partPos = event.object.myPosition;
@@ -487,6 +492,7 @@ dragControls.addEventListener('drag', (event) => {
     const zDistance = isInRange(zPos, partPos.z, 1, 8);
 
     console.log(`X Distance: ${xDistance}, Y Distance: ${yDistance}, Z Distance: ${zDistance}`);
+    /*
   
     if (currentCSSObject) {
       if (xDistance === 'far' || yDistance === 'far' || zDistance === 'far') {
@@ -499,6 +505,16 @@ dragControls.addEventListener('drag', (event) => {
         currentCSSObject.element.innerHTML = 'Nos acercamos';
         changeBackgroundColor(currentCSSObject, 'orange');
       }
+    }*/
+    if (xDistance === 'far' || yDistance === 'far' || zDistance === 'far') {
+        dragLabel.innerHTML = 'Posición incorrecta';
+        dragLabel.style.backgroundColor = 'red';
+    } else if (xDistance === 'close' && yDistance === 'close' && zDistance === 'close') {
+        dragLabel.innerHTML = 'Posición correcta';
+        dragLabel.style.backgroundColor = 'green';
+    } else {
+        dragLabel.innerHTML = 'Nos acercamos';
+        dragLabel.style.backgroundColor = 'orange';
     }
   });
 /*
@@ -1055,7 +1071,7 @@ function changeBackgroundColor(cssObject, color) {
 
 function animate(){
     TWEEN.update(performance.now());
-    labelRenderer.render(scene, camera);
+    //labelRenderer.render(scene, camera);
     renderer.render(scene,camera);
     //console.log("posición de la camara",camera.position);
 }
