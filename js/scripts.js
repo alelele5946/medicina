@@ -35,7 +35,7 @@ const axesHelper = new THREE.AxesHelper(300); // Creación de los ejes para ayud
 let axis = false; // al principio no se muestran
 axesHelper.translateY(-10);
 
-
+/*
 document.querySelector('.menu-toggle').addEventListener('click', function() {
     document.querySelector('.menu').classList.toggle('active');
   });
@@ -48,7 +48,11 @@ document.querySelector('.menu-toggle').addEventListener('click', function() {
       // cuando se hace clic en un botón del menú, oculta el menú
       document.querySelector('.menu').classList.toggle('active');
     });
-  }
+  }*/
+document.querySelector('.menu-toggle').addEventListener('click', function() {
+  document.querySelector('.menu').classList.toggle('active');
+});
+
   
  
 // control de ejes
