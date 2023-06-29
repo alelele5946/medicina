@@ -348,6 +348,78 @@ body {
     }
   }
 
+  .dropdown {
+    position: relative;
+    display: inline-block;
+    
+  }
+  
+  .dropbtn {
+    background-color: #efefef;
+    color: white;
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+    margin: 5px;
+  }
+  
+  .dropdown-content {
+    display: none;
+    position: absolute;
+    /*
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+    z-index: 1;*/
+    padding: 5px;
+    
+  }
+  
+  .dropdown-content button {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    cursor: pointer;
+    margin-bottom: 5px;
+  }
+  
+  .dropdown:hover .dropdown-content {
+    display: block;
+  }
+
+  #toggleDragDrop {
+    display: none;
+}
+
+#selectedObjectsContainer {
+  display: none;
+}
+
+#toggleSelectedObjects {
+  display: none;
+}
+  
+#selectedObjectsContainer {
+  display: none;
+  position: fixed;
+  right: 0;
+  top: 0;
+  width: 200px;
+  height: 100%;
+  overflow-y: auto;
+  background-color: rgba(255, 255, 255, 0.8);
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+#selectedObjectsContainer button {
+  display: block;
+  width: 100%;
+  margin-bottom: 10px;
+  /* Estiliza tus botones como quieras aquí */
+}
+
 #loader {
     position: fixed;
     top: 0;

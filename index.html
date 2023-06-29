@@ -32,10 +32,26 @@
 				<h1>Anatomy</h1>
 			</div>
 			<nav class="menu">
-				<button id="axisBtn">axis</button>
+				<!--button id="axisBtn">axis</button>
 				<button id="upView">Up</button>
 				<button id="frontView">front</button>
-				<button id="downView">down</button>
+				<button id="downView">down</button-->
+				<!--select id="viewDropdown">
+					<option value="">Vistas</option>
+					<option value="axis">Axis</option>
+					<option value="up">Up</option>
+					<option value="front">Front</option>
+					<option value="down">Down</option>
+				</select-->
+				<div class="dropdown">
+					<button class="dropbtn">Vistas</button>
+					<div class="dropdown-content">
+					  <button id="axisBtn">axis</button>
+					  <button id="upView">Up</button>
+					  <button id="frontView">front</button>
+					  <button id="downView">down</button>
+					</div>
+				  </div>
 				<button id="toggleRaycaster" class="toggle-btn">Toggle Raycaster</button>
 				
 				
@@ -43,6 +59,8 @@
 				<button id="class1" class="toggle-btn">Class1</button>
 				<button id="deselect">deselect</button>
 				<button id="toggleDragDrop" class="toggle-btn">Toggle Drag & Drop</button>
+				<button id="toggleSelectedObjects">Seleccionados</button>
+				<div id="selectedObjectsContainer"></div>
 			</nav>
 			<div class="slider-container">
 				<input type="range" id="opacity-slider" min="0" max="100" value="100" />
