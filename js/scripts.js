@@ -144,7 +144,6 @@ toggleSelectedObjectsBtn.addEventListener("click", function () {
 
 //Clase 1
 class1.addEventListener('click', function() {
-    console.log("holaaaa")
     const dragDropButton = document.getElementById("toggleDragDrop");
     const deselectButton = document.getElementById('deselect');
     const frontButton = document.getElementById('frontView');
@@ -152,9 +151,9 @@ class1.addEventListener('click', function() {
     frontButton.click();
     if(!Clase1noActiva){
         class1.classList.toggle('active');
-        if (!isFullscreen()) {
-            dragDropButton.style.display = "none";
-        }
+        
+        dragDropButton.style.display = "none";
+        
         deselectButton.style.display = "block";
         toggleRaycasterBtn.style.display = "block";
         
@@ -184,6 +183,7 @@ class1.addEventListener('click', function() {
        
         deselectButton.style.display = "none";
         toggleRaycasterBtn.style.display = "none";
+        dragDropButton.style.display = "block";
         
         Clase1noActiva = false;
         if(clase1FirstTime){
