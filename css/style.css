@@ -127,6 +127,8 @@ body {
     padding: 20px;
     box-sizing: border-box;
 }
+
+
 .menu-toggle {
     display: none; /* Ocultar por defecto */
     position: fixed;
@@ -181,6 +183,8 @@ body {
     .side-menu {
         display: block;
     }
+
+    
 }
 
 

@@ -36,19 +36,9 @@ let axis = false; // al principio no se muestran
 axesHelper.translateY(-10);
 
 
-document.querySelector('.menu-toggle').addEventListener('click', function() {
+  document.querySelector('.menu-toggle').addEventListener('click', function() {
     document.querySelector('.menu').classList.toggle('active');
   });
-
-  var menuButtons = document.querySelectorAll('.menu button');
-
-  // por cada botón del menú, añade un controlador de eventos 'click'
-  for (var i = 0; i < menuButtons.length; i++) {
-    menuButtons[i].addEventListener('click', function() {
-      // cuando se hace clic en un botón del menú, oculta el menú
-      document.querySelector('.menu').classList.toggle('active');
-    });
-  }
   
  
 // control de ejes
@@ -62,104 +52,24 @@ axisBtn.addEventListener("click", function(){
         axis = true;
 
     }
-    let cameraDirection = new THREE.Vector3();
-    camera.getWorldDirection(cameraDirection);
-    console.log("camara position", camera.position);
-    console.log("camara direction", cameraDirection);
-    // Cconsole.log("camara look", camera.lookAt)reamos un vector para la posición objetivo (0,0,0)
-let target = new THREE.Vector3(0, 0, 0);
-
-// Obtenemos la dirección en la que está mirando la cámara
-
-
-// Creamos un vector desde la cámara al objetivo
-let directionToTarget = new THREE.Vector3().subVectors(target, camera.position).normalize();
-
-// Comparamos si la dirección de la cámara es la misma que la dirección al objetivo
-console.log(directionToTarget)
-console.log(cameraDirection)
-if (cameraDirection.equals(directionToTarget)) {
-    console.log("La cámara está mirando al punto (0,0,0)");
-} else {
-    console.log("La cámara no está mirando al punto (0,0,0)");
-}
 });
 
-
-
-
-//Controles de las vistas
-//----------------------------------------------------------------------------------------------------------------------------------
-/*
-const viewDropdown = document.getElementById("viewDropdown");
-
-viewDropdown.addEventListener("change", function() {
-  const selectedValue = viewDropdown.value;
-
-  switch (selectedValue) {
-    case "axis":
-        if(axis){
-            axis = false;
-            scene.remove(axesHelper);
-        }
-        else{
-            scene.add(axesHelper);
-            axis = true;
-    
-        }
-      break;
-    case "up":
-        camera.position.set(0,50,0);
-        camera.lookAt(0,0,0);
-    
-        orbitControls.target.set(0,0,0);
-    
-        // Necesitas llamar a .update() para que los cambios tengan efecto
-        orbitControls.update();
-      break;
-    case "front":
-        camera.position.set(0,0,50);
-        camera.lookAt(0,-6,-1);
-        // Restablece el punto de mira (target) de OrbitControls
-        orbitControls.target.set(0,0,0);
-    
-        // Necesitas llamar a .update() para que los cambios tengan efecto
-        orbitControls.update();
-      break;
-    case "down":
-        camera.position.set(0,-50,0);
-        camera.lookAt(0,0,0);
-        orbitControls.target.set(0,0,0);
-    
-        // Necesitas llamar a .update() para que los cambios tengan efecto
-        orbitControls.update();
-      break;
-    default:
-      // Acción por defecto o cuando se selecciona la opción vacía
-      break;
-  }
-});*/
 
 upView.addEventListener("click", function(){
     camera.position.set(0,50,0);
     camera.lookAt(0,0,0);
-
     orbitControls.target.set(0,0,0);
-
     // Necesitas llamar a .update() para que los cambios tengan efecto
     orbitControls.update();
     
-    //console.log("la funcion se llamó");
 });
 frontView.addEventListener("click", function(){
     camera.position.set(0,0,50);
     camera.lookAt(0,-6,-1);
     // Restablece el punto de mira (target) de OrbitControls
     orbitControls.target.set(0,0,0);
-
     // Necesitas llamar a .update() para que los cambios tengan efecto
     orbitControls.update();
-    
 });
 downView.addEventListener("click", function(){
     camera.position.set(0,-50,0);
@@ -179,53 +89,14 @@ deselect.addEventListener("click", function(){
     opacitySlider.value = 100;
     updateOpacity();
     showPartName("deselected")
-    console.log("posicion camara ahorita", camera.position);
-    console.log("hollaaaa")
-    camera.position.set(0,0,50);
-    camera.lookAt(0,0,0); // vista frontal
     selectedPart = null;
 });
 
-/*
-let touchCount = 0;
-
-function handleTouchStart(event) {
-    touchCount = event.touches.length;
-
-    if (touchCount > 1) {
-        // Más de un dedo, suponemos que el usuario quiere hacer zoom
-        orbitControls.enabled = true;
-        dragControls.enabled = false;
-    } else {
-        // Un solo dedo, suponemos que el usuario quiere arrastrar
-        orbitControls.enabled = false;
-        dragControls.enabled = true;
-    }
-}
-
-function handleTouchEnd() {
-    touchCount = 0;
-
-    // Puedes reajustar el estado de tus controles aquí, si es necesario
-}
-
-*/
 toggleDragDropButton.addEventListener('click', function () {
     toggleDragDropButton.classList.toggle('active');
     orbitControlsEnabled = !orbitControlsEnabled;
     orbitControls.enabled = orbitControlsEnabled;
     dragControls.enabled = !orbitControlsEnabled;
-    /*
-
-    if (dragControls.enabled) {
-        // Si DragControls está habilitado, entonces registramos los eventos de tacto
-        renderer.domElement.addEventListener('touchstart', handleTouchStart);
-        renderer.domElement.addEventListener('touchend', handleTouchEnd);
-    } else {
-        // Si DragControls está deshabilitado, entonces removemos los eventos de tacto
-        renderer.domElement.removeEventListener('touchstart', handleTouchStart);
-        renderer.domElement.removeEventListener('touchend', handleTouchEnd);
-    }*/
 });
 
 
@@ -236,9 +107,6 @@ toggleDragDropButton.addEventListener('click', function () {
 // renderizado --------------------------------------------------------------------------------------------
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
-// Establece el índice z y el posicionamiento de tu canvas
-//renderer.domElement.style.zIndex = '1';
-//renderer.domElement.style.position = 'absolute';
 document.body.appendChild(renderer.domElement);
 
 const scene = new THREE.Scene();
@@ -250,19 +118,6 @@ const camera = new THREE.PerspectiveCamera(
     1000
 );
 camera.position.set(0,0,50);
-//-----------------------------------------------------------------------------------------
-/*
-// CSS2DRenderer---------------------------------------------------------
-const labelRenderer = new CSS2DRenderer();
-labelRenderer.setSize(window.innerWidth, window.innerHeight);
-labelRenderer.domElement.style.position = 'absolute';
-labelRenderer.domElement.style.top = '0px';
-labelRenderer.domElement.style.pointerEvents = 'none';
-document.body.appendChild(labelRenderer.domElement);
-labelRenderer.setSize(window.innerWidth, window.innerHeight);*/
-
-
-//---------------------------------------------------
 
 window.addEventListener('resize', function() {
     // Actualiza el aspecto de la cámara
@@ -274,25 +129,25 @@ window.addEventListener('resize', function() {
 }, false);
 
 
-
-
 const dragControls = new DragControls(objetosControlados, camera, renderer.domElement);
 dragControls.enabled = false;
-
-
 
 const toggleSelectedObjectsBtn = document.getElementById("toggleSelectedObjects");
 toggleSelectedObjectsBtn.addEventListener("click", function () {
     const container = document.getElementById("selectedObjectsContainer");
     const style = window.getComputedStyle(container);
     const isHidden = style.display === 'none';
-
     if (isHidden) {
         container.style.display = 'block';  // Muestra el contenedor si está oculto
     } else {
         container.style.display = 'none';   // Oculta el contenedor si está visible
     }
 });
+
+// Función para comprobar si el documento está en modo de pantalla completa
+function isFullscreen() {
+    return document.fullscreenElement || document.mozFullScreenElement || document.webkitFullscreenElement || document.msFullscreenElement;
+}
 
 //Clase 1
 class1.addEventListener('click', function() {
@@ -302,11 +157,11 @@ class1.addEventListener('click', function() {
     const frontButton = document.getElementById('frontView');
     deselectButton.click();
     frontButton.click();
-    
-    
     if(!Clase1noActiva){
         class1.classList.toggle('active');
-        dragDropButton.style.display = "none";
+        if (!isFullscreen()) {
+            dragDropButton.style.display = "none";
+        }
         deselectButton.style.display = "block";
         toggleRaycasterBtn.style.display = "block";
         
@@ -325,8 +180,6 @@ class1.addEventListener('click', function() {
         
         updateOpacity();
         showPartName("deselected")
-        console.log("posicion camara ahorita", camera.position);
-        console.log("hollaaaa")
         camera.position.set(0,0,50);
         camera.lookAt(0,0,0); // vista frontal
         selectedPart = null;
@@ -334,7 +187,11 @@ class1.addEventListener('click', function() {
     else{
         countClass1 = 0;
         class1.classList.toggle('active');
-        dragDropButton.style.display = "block";
+        
+        if (!isFullscreen()) {
+            console.log("tuttlo la pera con la papaya");
+            dragDropButton.style.display = "block";
+        }
         deselectButton.style.display = "none";
         toggleRaycasterBtn.style.display = "none";
         
@@ -344,18 +201,12 @@ class1.addEventListener('click', function() {
             // Encuentra los objetos que queremos duplicar
             const objectToDuplicate1 = partesCuerpo.find(parte => parte.name === 'Lower_medial_incisor_r');
             objectToDuplicate1.myPosition = objectToDuplicate1.getWorldPosition(new THREE.Vector3());
-            //console.log("posicion del objectToDuplicate1 es: ", objectToDuplicate1.myPosition );
             const objectToDuplicate2 = partesCuerpo.find(parte => parte.name === 'Lower_medial_incisor_l');
             objectToDuplicate1.myPosition = objectToDuplicate1.getWorldPosition(new THREE.Vector3());
-            //console.log(objectToDuplicate2)
-
             // Encuentra el objeto que queremos seleccionar
     
             selectedPart = partesCuerpo.find(parte => parte.name === 'Mandible');
             selectedPart.isSelected = true;
-
-            //dragControls.dispose(); // Elimina los event listeners del antiguo DragControls
-            //dragControls = new DragControls(objetosControlados, camera, renderer.domElement); // Crea un nuevo DragControls con los nuevos objetos
 
             // Duplicar los objetos
             if (objectToDuplicate1) {
@@ -366,35 +217,25 @@ class1.addEventListener('click', function() {
                 const copiedPartPosition = new THREE.Vector3(20, 35, 6); // Cambia esta posición si es necesario
                 addPartCopy(objectToDuplicate2, copiedPartPosition);
             }
-            showPartName("Ahora debes seleccionar la opción toggle drag and drop para poder mover cada molar a su posición. Para mover la camara se debe volver a desactivar el drag and drop");
+            showPartName("Ahora debes seleccionar la opción drag o pulsar ctrl para poder mover cada molar a su posición. En caso de usar drag, si quieres mover la camara se debe volver a desactivar ");
 
             updateOpacity();
         }
         else{
             let molar = objetosControlados[0]
             let position = new THREE.Vector3(20, -10, 6);
-            console.log(position.x, position.y, position.z, "esta es la seguna vez");
             molar.position.set(position.x,position.y,position.z);
             scene.add(molar);
-            console.log("posición segunda", molar.getWorldPosition(new THREE.Vector3()))
-
             molar = objetosControlados[1]
             position = new THREE.Vector3(20, -15, 6);
-            console.log(position.x, position.y, position.z, "esta es la tercera vez");
             molar.position.set(position.x,position.y,position.z);
             scene.add(molar);
-            console.log("posición segunda", molar.getWorldPosition(new THREE.Vector3()))
-
             selectedPart = partesCuerpo.find(parte => parte.name === 'Mandible');
             selectedPart.isSelected = true;
 
             showPartName("Ahora debes seleccionar la opción toggle drag and drop para poder mover cada molar a su posición");
 
             updateOpacity();
-        
-
-
-
         }
     }
     
@@ -406,54 +247,11 @@ const dragLabel = document.getElementById("drag-label");
 dragControls.addEventListener('dragstart', function (event) {
     console.log('dragstart', event.object);
     dragLabel.style.display = "block";
-    /*
-    currentCSSObject = createCSS2DObject('Texto por encima del objeto');
-    event.object.add(currentCSSObject);   */
 });
-/*
-dragControls.addEventListener('drag', (event) => {
-    console.log('drag', event.object);
-
-    const xPos = event.object.position.x;
-    const yPos = event.object.position.y;
-    const zPos = event.object.position.z;
-
-    const partPos = event.object.myPosition; // posición donde se debe colocar
-    
-
-    // Verifica si el objeto ha alcanzado la posición deseada
-    if ((xPos >= partPos.x-1 && xPos < partPos.x+1) && (yPos >= partPos.y-1 && yPos < partPos.y+1) && (zPos >= partPos.z-1 && zPos < partPos.z+1) ) {
-        // Actualiza el texto y el color del fondo del objeto según sea necesario
-        if (currentCSSObject) {
-            currentCSSObject.element.innerHTML = 'Posición correcta';
-            changeBackgroundColor(currentCSSObject, 'green');
-        }
-    } else if(((xPos >= partPos.x-4 && xPos < partPos.x-1)||(xPos <= partPos.x+4 && xPos > partPos.x+1)) && ((yPos >= partPos.y-4 && yPos < partPos.y-1)||(yPos <= partPos.y+4 && yPos > partPos.y+1)) && ((zPos >= partPos.z-4 && zPos < partPos.z-1)||(zPos <= partPos.z+4 && zPos > partPos.z+1))){
-        console.log("posición x correcta:", partPos.x, "pos x actual: ", xPos)
-        console.log("posición y correcta:", partPos.y, "pos y actual: ", yPos)
-        if (currentCSSObject) {
-            currentCSSObject.element.innerHTML = 'Nos acercamos';
-            changeBackgroundColor(currentCSSObject, 'orange');
-        }
-    }
-     else if ((xPos < partPos.x-4) || (xPos > partPos.x+4) && (yPos < partPos.y-4) || (yPos > partPos.y+4) && (zPos < partPos.z-4) || (zPos > partPos.z+4)){
-        if (currentCSSObject) {
-            currentCSSObject.element.innerHTML = 'Posición incorrecta';
-            changeBackgroundColor(currentCSSObject, 'red');
-        }
-    }
-});*/
-
 
 dragControls.addEventListener('dragend', (event) => {
     console.log('dragend', event.object.getWorldPosition(new THREE.Vector3()));
     dragLabel.style.display = "none";
-    /*
-    if (currentCSSObject) {
-        event.object.remove(currentCSSObject);
-        currentCSSObject = null;
-    }*/
-
     const { x: xPos, y: yPos, z: zPos } = event.object.position;
     const partPos = event.object.myPosition;
   
@@ -461,28 +259,20 @@ dragControls.addEventListener('dragend', (event) => {
     const yDistance = isInRange(yPos, partPos.y, 1, 8);
     const zDistance = isInRange(zPos, partPos.z, 1, 8);
     if(selectedPart){
-        //const partPos = event.object.myPosition;
-        console.log("where i must end", event.object.myPosition);
-        console.log("where i am currently", event.object.position);
-
     // Verifica si el objeto ha alcanzado la posición deseada
     if (xDistance === 'close' && yDistance === 'close' && zDistance === 'close' ) {
         // Coloca el objeto en la posición exacta
         event.object.position.set(partPos.x, partPos.y, partPos.z);
         if(countClass1 != 2){ countClass1 += 1;} 
-        
     }
 
     }
     if(countClass1 == 2){
         showPartName("¡Felicidades! Has completado la clase, pica sobre clase 1 para salir de la clase");
         countClass1 = 0;
-    
     }
     
 });
-
-
 dragControls.addEventListener('drag', (event) => {
     const { x: xPos, y: yPos, z: zPos } = event.object.position;
     const partPos = event.object.myPosition;
@@ -491,21 +281,6 @@ dragControls.addEventListener('drag', (event) => {
     const yDistance = isInRange(yPos, partPos.y, 1, 8);
     const zDistance = isInRange(zPos, partPos.z, 1, 8);
 
-    console.log(`X Distance: ${xDistance}, Y Distance: ${yDistance}, Z Distance: ${zDistance}`);
-    /*
-  
-    if (currentCSSObject) {
-      if (xDistance === 'far' || yDistance === 'far' || zDistance === 'far') {
-        currentCSSObject.element.innerHTML = 'Posición incorrecta';
-        changeBackgroundColor(currentCSSObject, 'red');
-      } else if (xDistance === 'close' && yDistance === 'close' && zDistance === 'close') {
-        currentCSSObject.element.innerHTML = 'Posición correcta';
-        changeBackgroundColor(currentCSSObject, 'green');
-      } else {
-        currentCSSObject.element.innerHTML = 'Nos acercamos';
-        changeBackgroundColor(currentCSSObject, 'orange');
-      }
-    }*/
     if (xDistance === 'far' || yDistance === 'far' || zDistance === 'far') {
         dragLabel.innerHTML = 'Posición incorrecta';
         dragLabel.style.backgroundColor = 'red';
@@ -517,14 +292,7 @@ dragControls.addEventListener('drag', (event) => {
         dragLabel.style.backgroundColor = 'orange';
     }
   });
-/*
-  else if (xDistance === 'medium' && yDistance === 'medium' && zDistance === 'medium') {
-    currentCSSObject.element.innerHTML = 'Nos acercamos';
-    changeBackgroundColor(currentCSSObject, 'orange');
-  } */
 
-
-  
 function isInRange(value, target, closeRange, farRange) {
     console.log(`Value: ${value}, Target: ${target}, Close Range: ${closeRange}, Far Range: ${farRange}`);
     if (value >= target - closeRange && value < target + closeRange) {
@@ -535,9 +303,6 @@ function isInRange(value, target, closeRange, farRange) {
       return 'far';
     }
   }
-
-
-
 
 /* Orbit controls*/
 const orbitControls = new OrbitControls(camera, renderer.domElement);
@@ -616,15 +381,6 @@ renderer.domElement.addEventListener("click", (event) => {
             // Agrega el botón al contenedor
             container.appendChild(button);
         });
-        /*
-        showPartName(intersects[0].object.name); // Muestra el primer elemento en intersects
-        selectedPart = false;
-        selectedPart = partesCuerpo.find(parte => parte.name === intersects[0].object.name);
-        selectedPart.isSelected = true;
-        animarCamara(camera, selectedPart);
-        
-        intersectIndex = 1 % intersects.length; // Inicializa intersectIndex en 1
-        */
     }
     updateOpacity();
     console.log(intersects)
@@ -641,25 +397,30 @@ document.addEventListener("keydown", (event) => {
         //const intersects = raycaster.intersectObjects(partesCuerpo);
         if (intersects.length > 0) {
             showPartName(intersects[intersectIndex].object.name); // Muestra el siguiente elemento en intersects
-            
-
-            //----------------------prueba pero un poco cutre quizas-----------------------
             selectedPart.isSelected = false;
             selectedPart = partesCuerpo.find(parte => parte.name === intersects[intersectIndex].object.name);
             selectedPart.isSelected = true;
             animarCamara(camera, selectedPart);
             opacitySlider.value = 10;
-        
-            
             updateOpacity();
-
             intersectIndex = (intersectIndex + 1) % intersects.length; // Actualiza intersectIndex
         }
+    }
+    if(event.ctrlKey) {
+        orbitControlsEnabled = !orbitControlsEnabled;
+        orbitControls.enabled = orbitControlsEnabled;
+        dragControls.enabled = !orbitControlsEnabled;
     }
 });
 //-----------------------------------------------------------------------------------------------------------
 
-
+document.addEventListener("keyup", (event) => {
+    if(event.key === 'Control') {
+        orbitControlsEnabled = !orbitControlsEnabled;
+        orbitControls.enabled = orbitControlsEnabled;
+        dragControls.enabled = !orbitControlsEnabled;
+    }
+});
 //boton para activar o desactivar el raycaster
 const toggleRaycasterBtn = document.getElementById("toggleRaycaster");
 toggleRaycasterBtn.addEventListener("click", function () {
@@ -677,8 +438,6 @@ toggleRaycasterBtn.addEventListener("click", function () {
     }
 });
 //----------------------------------------------------------------------------------------------------
-
-
 /* Añadimos luz de ambiente , un spotlight y un helper para ayudar con el spotlight */
 const ambientLight = new THREE.AmbientLight(0x333333);
 scene.add(ambientLight);
@@ -688,47 +447,12 @@ spotLight.position.set(-100,100,0);
 spotLight.castShadow = true;
 spotLight.angle = 0.2;
 const sLightHelper = new THREE.SpotLightHelper(spotLight);
-//scene.add(sLightHelper);
 //-------------------------------------------------------------------------------------------------
 
 // variables para botones y ids de objetos
 var botones = [];
 var idsObjetos = [];
 var botonesContainer = document.getElementById('botones-container');
-
-/*
-// Crear un administrador de carga
-let manager = new THREE.LoadingManager();
-
-let progressBar = document.getElementById('progressBar');
-let progressText = document.getElementById('progressText');
-
-manager.onProgress = function (url, itemsLoaded, itemsTotal) {
-    // Actualizar la barra de carga
-    let progress = itemsLoaded / itemsTotal * 100;
-    progressBar.style.width = progress + '%';
-    progressText.innerHTML = Math.round(progress) + '%';
-};
-
-manager.onLoad = function () {
-    // Quitar la barra de carga cuando se haya terminado
-    progressBar.style.display = 'none';
-    progressText.style.display = 'none';
-};
-
-manager.onError = function (url) {
-    console.log('Hubo un error al cargar ' + url);
-};*/
-
-// Loader con el administrador de carga
-
-//const progressBarElement = document.getElementById('progress-bar');
-//const progressContainerElement = document.getElementById('progress-container');
-
-//progressContainerElement.style.display = 'block'; // Muestra la barra de progreso
-
-
-
 
 // Primero, obtenemos la referencia a los elementos que vamos a necesitar
 const numb = document.querySelector(".numb");
@@ -737,11 +461,6 @@ const progressRight = document.querySelector(".bar.right .progress");
 const circularElement = document.querySelector('.circular');
 const fbxLoader = new FBXLoader();
 
-
-
-
-
-
 fbxLoader.load(
     skeletonUrl.href,
     
@@ -749,11 +468,9 @@ fbxLoader.load(
     (object) => {
 
         // Aquí se maneja el modelo cargado
-        //progressContainerElement.style.display = 'none'; // Oculta la barra de progreso cuando se haya terminado de cargar el modelo
-        //const loader = document.getElementById('loader');
-        //loader.style.display = 'none';
-        let count = 0;
+
         // ...
+        
         partesCuerpo = [];
         const letras = new Set();
         const letrasContainer = document.createElement('div');
@@ -768,6 +485,7 @@ fbxLoader.load(
             }
         });
         console.log(partesCuerpo.length);
+        
 
         // Convertir el conjunto en un array y ordenarlo alfabéticamente
         const letrasArray = Array.from(letras).sort(); 
@@ -790,13 +508,11 @@ fbxLoader.load(
             botonesContainer.appendChild(partesContainer);
             for (const parte of partesCuerpo) {
                 // Guardar originalMaterials antes de verificar si la primera letra coincide
-                //parte.originalMaterials = parte.material;
                 if (parte.name[0].toUpperCase() === letra) {
                     const botonParte = document.createElement('button');
                     botonParte.innerText = parte.name;
                     parte.isSelected = false;
                     botonParte.addEventListener('click', function() {
-                        //if (!parte.isSelected) { // Si esa parte no había sido seleccionada previamente
                             if(selectedPart){
                                 selectedPart.isSelected = false;
         
@@ -874,34 +590,20 @@ fbxLoader.load(
         
         
         // control de opacidad ------------------------------------------------------------------
-      
-     
-    
-        
-       
+
         // Vincular la función updateOpacity al evento 'input' del control deslizante
         opacitySlider.addEventListener("input", updateOpacity);
-    
         // Llamar a la función updateOpacity una vez al inicio para establecer la opacidad inicial
         updateOpacity();
 
-
-        
-        
         object.scale.set(.004, .004, .004)
         object.translateY(-60);
         object.rotateX(-Math.PI/2);
         console.log("posición del busto",object.position);
-        /*
-        const boundingBox = new THREE.Box3().setFromObject(object);
-        const size = boundingBox.getSize(new THREE.Vector3());
-        bustoSize = Math.max(size.x, size.y, size.z);*/
-        //console.log("tamaño busto",maxSize);
+
         busto = object; // tener referencia al busto en cualquier momento
         circularElement.style.display = 'none';
         scene.add(object)
-        
-        // console.log("I arrived here")
     },
     (xhr) => {
         console.log((xhr.loaded / xhr.total) * 100 + '% loaded')
@@ -933,9 +635,7 @@ function bucleOpacity(opacity){
             if(opacity == 0)parte.visible = false;
             else{parte.visible = true}
             if(Array.isArray(parte.material) ){
-                //console.log("hola3")
                 parte.material = parte.material.map(mat => {
-                //console.log("enabled material", parte );
                 const newMaterial = mat.clone();
                 newMaterial.opacity = opacity;
                 newMaterial.transparent = true;
@@ -969,37 +669,48 @@ function updateOpacity() {
     }
 }
 
-
-
-let animationRequestId;
 function animarCamara(camara, nuevaParte) {
     let boundingBox = new THREE.Box3().setFromObject(nuevaParte);
     let size = boundingBox.getSize(new THREE.Vector3());
     const maxNuevaParte = Math.max(size.x, size.y, size.z);
     let posicionNuevaParte = nuevaParte.getWorldPosition(new THREE.Vector3());
-    console.log("posicion nueva parte", posicionNuevaParte.y);
-    let newX;
-    let newY;
-    let newZ;
-    boundingBox = new THREE.Box3().setFromObject(busto);// parte seleccionada previamente
+
+    boundingBox = new THREE.Box3().setFromObject(busto); // parte seleccionada previamente
     size = boundingBox.getSize(new THREE.Vector3());
     const maxBusto = Math.max(size.x, size.y, size.z);
-    newX = Math.round(posicionNuevaParte.x);
-    newY = Math.round(posicionNuevaParte.y);
-    newZ = Math.round(((maxNuevaParte*(busto.position.z + 50))/maxBusto)*0.7);
-      new TWEEN.Tween(camera.position)
-    .to(
-    {
-        x: newX,
-        y: newY,
-        z: newZ,
-    },
-    1000
-    )
-    .easing(TWEEN.Easing.Cubic.Out)
-    .start()
-    .onUpdate(()=>camera.lookAt(posicionNuevaParte));
+
+    // Calcula la relación de tamaño entre los dos objetos
+    const ratio = maxNuevaParte / maxBusto;
+
+    // Calcula la nueva distancia de la cámara en base a la distancia del busto 
+    // y la relación de tamaño del nuevo objeto y el busto
+    let distanciaCamara = 50 * ratio;
+    console.log("distanciacamara", distanciaCamara);
+
+    // Calcula el vector de dirección desde el objeto a la cámara 
+    let direccion = new THREE.Vector3().subVectors(camara.position, posicionNuevaParte).normalize();
+
+    console.log("direccion",direccion);
+
+    // Escala el vector de dirección por la distancia deseada para obtener la nueva posición de la cámara
+    let nuevaPosicionCamara = new THREE.Vector3().addVectors(posicionNuevaParte, direccion.multiplyScalar(distanciaCamara));
+    
+    console.log(nuevaPosicionCamara);
+
+    new TWEEN.Tween(camara.position)
+        .to(
+            {
+                x: nuevaPosicionCamara.x,
+                y: nuevaPosicionCamara.y,
+                z: nuevaPosicionCamara.z,
+            },
+            1000
+        )
+        .easing(TWEEN.Easing.Cubic.Out)
+        .start()
+        .onUpdate(() => camara.lookAt(posicionNuevaParte));
 }
+
 
   
 
@@ -1047,13 +758,11 @@ function createCSS2DObject(text) {
     div.style.marginTop = '2em'; // Ajusta el valor según la distancia que deseas
     div.style.marginLeft = "-5em";
     div.style.backgroundColor = 'red';
-    //div.style.border = '2px solid black';
     div.style.padding = '5px';
     div.style.color = 'white';
     div.style.fontFamily = 'Arial, sans-serif';
     div.style.fontSize = '16px';
     div.style.pointerEvents = 'none'; // Para que el texto no interfiera con el DragControls
-
     const cssObject = new CSS2DObject(div);
     return cssObject;
 }
@@ -1065,16 +774,9 @@ function changeBackgroundColor(cssObject, color) {
 }
 
   //------------------------------------------------------------------------------------------
-  
-
-
-
 function animate(){
     TWEEN.update(performance.now());
-    //labelRenderer.render(scene, camera);
     renderer.render(scene,camera);
-    //console.log("posición de la camara",camera.position);
 }
-
 
 renderer.setAnimationLoop(animate);
