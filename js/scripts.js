@@ -21,7 +21,7 @@ let Clase1noActiva = true;
 const toggleDragDropButton = document.getElementById('toggleDragDrop');
 let orbitControlsEnabled = true;
 let countClass1 = 0;
-let currentCSSObject;
+
 let clase1FirstTime = true;
 
 // Obtener referencias a los elementos HTML
@@ -59,7 +59,6 @@ upView.addEventListener("click", function(){
     camera.position.set(0,50,0);
     camera.lookAt(0,0,0);
     orbitControls.target.set(0,0,0);
-    // Necesitas llamar a .update() para que los cambios tengan efecto
     orbitControls.update();
     
 });
@@ -68,15 +67,12 @@ frontView.addEventListener("click", function(){
     camera.lookAt(0,-6,-1);
     // Restablece el punto de mira (target) de OrbitControls
     orbitControls.target.set(0,0,0);
-    // Necesitas llamar a .update() para que los cambios tengan efecto
     orbitControls.update();
 });
 downView.addEventListener("click", function(){
     camera.position.set(0,-50,0);
     camera.lookAt(0,0,0);
     orbitControls.target.set(0,0,0);
-
-    // Necesitas llamar a .update() para que los cambios tengan efecto
     orbitControls.update();
 });
 
@@ -144,10 +140,7 @@ toggleSelectedObjectsBtn.addEventListener("click", function () {
     }
 });
 
-// Función para comprobar si el documento está en modo de pantalla completa
-function isFullscreen() {
-    return document.fullscreenElement || document.mozFullScreenElement || document.webkitFullscreenElement || document.msFullscreenElement;
-}
+
 
 //Clase 1
 class1.addEventListener('click', function() {
@@ -188,10 +181,7 @@ class1.addEventListener('click', function() {
         countClass1 = 0;
         class1.classList.toggle('active');
         
-        if (!isFullscreen()) {
-            console.log("tuttlo la pera con la papaya");
-            dragDropButton.style.display = "block";
-        }
+       
         deselectButton.style.display = "none";
         toggleRaycasterBtn.style.display = "none";
         
@@ -210,11 +200,11 @@ class1.addEventListener('click', function() {
 
             // Duplicar los objetos
             if (objectToDuplicate1) {
-                const copiedPartPosition = new THREE.Vector3(20, 30, 6); // Cambia esta posición si es necesario
+                const copiedPartPosition = new THREE.Vector3(20, 30, 6); 
                 addPartCopy(objectToDuplicate1, copiedPartPosition);
             }
             if (objectToDuplicate2) {
-                const copiedPartPosition = new THREE.Vector3(20, 35, 6); // Cambia esta posición si es necesario
+                const copiedPartPosition = new THREE.Vector3(20, 35, 6); 
                 addPartCopy(objectToDuplicate2, copiedPartPosition);
             }
             showPartName("Ahora debes seleccionar la opción drag o pulsar ctrl para poder mover cada molar a su posición. En caso de usar drag, si quieres mover la camara se debe volver a desactivar ");
@@ -294,7 +284,6 @@ dragControls.addEventListener('drag', (event) => {
   });
 
 function isInRange(value, target, closeRange, farRange) {
-    console.log(`Value: ${value}, Target: ${target}, Close Range: ${closeRange}, Far Range: ${farRange}`);
     if (value >= target - closeRange && value < target + closeRange) {
       return 'close';
     } else if (value >= target - farRange && value < target + farRange) {
@@ -358,7 +347,6 @@ renderer.domElement.addEventListener("click", (event) => {
         // Crea un Set con los objetos intersectados para eliminar duplicados
         const uniqueObjects = new Set(intersects.map(intersect => intersect.object));
         uniqueObjects.forEach((object) => {
-            //console.log(intersect);
             const button = document.createElement("button");
             button.innerHTML = object.name;
             button.setAttribute('data-id', object.id);
