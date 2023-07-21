@@ -207,23 +207,23 @@ class1.addEventListener('click', function() {
                 const copiedPartPosition = new THREE.Vector3(20, 35, 6); 
                 addPartCopy(objectToDuplicate2, copiedPartPosition);
             }
-            showPartName("Ahora debes seleccionar la opción drag o pulsar ctrl para poder mover cada molar a su posición. En caso de usar drag, si quieres mover la camara se debe volver a desactivar ");
+            showPartName("Ahora debes seleccionar la opción drag o pulsar ctrl para poder mover cada incisivo a su posición. En caso de usar drag, si quieres mover la camara se debe volver a desactivar ");
 
             updateOpacity();
         }
         else{
-            let molar = objetosControlados[0]
+            let incisive = objetosControlados[0]
             let position = new THREE.Vector3(20, -10, 6);
-            molar.position.set(position.x,position.y,position.z);
-            scene.add(molar);
-            molar = objetosControlados[1]
+            incisive.position.set(position.x,position.y,position.z);
+            scene.add(incisive);
+            incisive = objetosControlados[1]
             position = new THREE.Vector3(20, -15, 6);
-            molar.position.set(position.x,position.y,position.z);
-            scene.add(molar);
+            incisive.position.set(position.x,position.y,position.z);
+            scene.add(incisive);
             selectedPart = partesCuerpo.find(parte => parte.name === 'Mandible');
             selectedPart.isSelected = true;
 
-            showPartName("Ahora debes seleccionar la opción toggle drag and drop para poder mover cada molar a su posición");
+            showPartName("Ahora debes seleccionar la opción toggle drag and drop para poder mover cada incisive a su posición");
 
             updateOpacity();
         }
