@@ -4,6 +4,7 @@ const progressRight = document.querySelector('.bar.right .progress');
 const circularElement = document.querySelector('.circular');
 
 export function updateLoadingProgress(xhr) {
+  if (!xhr.total) return; // sin content-length no se puede calcular porcentaje
   const counter = Math.floor((xhr.loaded / xhr.total) * 100);
 
   numb.textContent = counter + '%';

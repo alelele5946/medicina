@@ -4,7 +4,7 @@ Visor 3D interactivo de anatomía (cabeza/cráneo) pensado como herramienta de e
 
 ## Features
 
-- Visor 3D del modelo anatómico (formato FBX) con controles de cámara orbitales.
+- Visor 3D del modelo anatómico (GLB comprimido con Draco, ~2.4 MB) con controles de cámara orbitales.
 - Selección de partes anatómicas mediante click (raycaster) o navegando con la tecla `e`.
 - Panel de partes intersectadas al hacer click, con acceso directo a cada una.
 - Menú lateral con búsqueda de partes indexada por letra inicial.
@@ -18,6 +18,7 @@ Visor 3D interactivo de anatomía (cabeza/cráneo) pensado como herramienta de e
 - [Three.js](https://threejs.org/) — motor de renderizado 3D (WebGL).
 - [Vite](https://vitejs.dev/) — dev server y build de producción.
 - [@tweenjs/tween.js](https://github.com/tweenjs/tween.js) — animaciones de cámara.
+- Modelo en glTF binario (GLB) con compresión [Draco](https://google.github.io/draco/) — los decoders viven en `public/draco/`.
 - JavaScript vanilla (ES modules), sin framework de UI.
 
 ## Requisitos previos
@@ -47,7 +48,8 @@ npm install
 ├── index.html                  # entry HTML (Vite)
 ├── vite.config.js
 ├── public/
-│   └── models/                 # modelos 3D (FBX), servidos como assets estáticos
+│   ├── draco/                  # decoders de Draco para GLTFLoader
+│   └── models/                 # modelos 3D (GLB + Draco), servidos como assets estáticos
 └── src/
     ├── main.js                 # composition root: wiring de toda la app
     ├── config/
@@ -72,7 +74,14 @@ npm install
 ## Cómo añadir una nueva lección o parte anatómica
 
 1. **Nueva lección guiada:** crea un archivo en `src/lessons/` siguiendo el patrón de `class1.js` (una función `setupLessonName()` que registra sus propios listeners). Añade los nombres de partes y posiciones objetivo a `src/config/constants.js`, y los textos instructivos a `src/config/strings.js`. Registra su botón en `index.html` y llama a la función de setup desde `src/main.js`.
-2. **Nuevo modelo 3D:** coloca el archivo `.fbx` en `public/models/` y actualiza (o parametriza) la referencia en `src/loaders/loadAnatomyModel.js` / `src/config/constants.js`.
+2. **Nuevo modelo 3D:** el visor carga GLB con compresión Draco. Si partes de un FBX, conviértelo preservando los nombres de las partes (¡no uses `optimize`/`join`, fusionaría los meshes y rompería la selección por nombre!):
+
+   ```bash
+   npx fbx2gltf --binary --input modelo.fbx --output modelo.glb
+   npx @gltf-transform/cli draco modelo.glb modelo.draco.glb
+   ```
+
+   Coloca el resultado en `public/models/` y actualiza `ANATOMY_MODEL_URL` en `src/config/constants.js`. Nota: los meshes multi-material de glTF se cargan como Groups con un mesh por material; el código ya trata el nodo con nombre como "parte anatómica" (ver `src/loaders/loadAnatomyModel.js` y `src/utils/parts.js`).
 
 ## Despliegue a GitHub Pages
 

@@ -29,8 +29,12 @@ export const SPOT_LIGHT_COLOR = 0xFFFFFF;
 export const SPOT_LIGHT_POSITION = { x: -100, y: 100, z: 0 };
 export const SPOT_LIGHT_ANGLE = 0.2;
 
-// Model transforms
-export const MODEL_SCALE = 0.004;
+// Model transforms.
+// The original FBX used scale 0.004; the GLB conversion baked the cm->m unit
+// change (x0.01) into the geometry, so the equivalent scale is 0.4. The
+// geometry is still Z-up (the converter did not change the up axis), so the
+// same rotateX(-PI/2) as before is required to stand the model upright.
+export const MODEL_SCALE = 0.4;
 export const MODEL_TRANSLATE_Y = -60;
 export const MODEL_ROTATE_X = -Math.PI / 2;
 
@@ -61,5 +65,5 @@ export const CAMERA_ANIMATION_DURATION_MS = 1000;
 export const OPACITY_SELECTED_VALUE = 10;
 export const OPACITY_DESELECTED_VALUE = 100;
 
-// Model asset
-export const ANATOMY_MODEL_URL = new URL('/models/zAnatomy-OnlyHead.fbx', import.meta.url);
+// Model asset (GLB with Draco compression — see README for how to regenerate)
+export const ANATOMY_MODEL_URL = `${import.meta.env.BASE_URL}models/zAnatomy-OnlyHead.glb`;

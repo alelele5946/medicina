@@ -1,5 +1,5 @@
 import { appState } from '../state/appState.js';
-import { setPartOpacity } from '../utils/materials.js';
+import { setPartOpacity, restorePartOriginalMaterials } from '../utils/materials.js';
 
 export const opacitySlider = document.getElementById('opacity-slider');
 export const opacityValue = document.getElementById('opacity-value');
@@ -10,7 +10,7 @@ function bucleOpacity(opacity) {
       parte.visible = opacity != 0;
       setPartOpacity(parte, opacity);
     } else {
-      parte.material = parte.originalMaterials;
+      restorePartOriginalMaterials(parte);
     }
   });
 }

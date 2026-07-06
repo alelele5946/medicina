@@ -4,6 +4,7 @@ import { orbitControls } from '../controls/orbitControls.js';
 import { toggleDragMode } from '../controls/controlsCoordinator.js';
 import { appState } from '../state/appState.js';
 import { animarCamara } from '../utils/cameraAnimation.js';
+import { findPartFor } from '../utils/parts.js';
 import { showPartName } from '../ui/partNameDisplay.js';
 import { opacitySlider, updateOpacity } from '../ui/opacitySlider.js';
 import { renderSelectedObjects, hideSelectedObjectsPanel } from '../ui/selectedObjectsPanel.js';
@@ -39,11 +40,11 @@ export function setupRaycastSelection() {
       if (!appState.raycasterEnabled || !appState.partesCuerpo.length) return;
       raycaster.setFromCamera(mouse, camera);
       if (appState.intersects.length > 0) {
-        showPartName(appState.intersects[appState.intersectIndex].object.name);
+        const part = findPartFor(appState.intersects[appState.intersectIndex].object, appState.partesCuerpo);
+        if (!part) return;
+        showPartName(part.name);
         appState.selectedPart.isSelected = false;
-        appState.selectedPart = appState.partesCuerpo.find(
-          (parte) => parte.name === appState.intersects[appState.intersectIndex].object.name
-        );
+        appState.selectedPart = part;
         appState.selectedPart.isSelected = true;
         animarCamara(camera, appState.selectedPart, appState.busto);
         opacitySlider.value = OPACITY_SELECTED_VALUE;

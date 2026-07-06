@@ -1,8 +1,9 @@
 import * as THREE from 'three';
+import { mergeBufferGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 import { scene } from '../core/scene.js';
 import { dragControls } from '../controls/dragControls.js';
 import { appState } from '../state/appState.js';
-import { setPartOpacity } from '../utils/materials.js';
+import { setPartOpacity, forEachPartMesh } from '../utils/materials.js';
 import { showPartName } from '../ui/partNameDisplay.js';
 import { updateOpacity } from '../ui/opacitySlider.js';
 import { showDragLabel, hideDragLabel, getPositionDistances, updateDragLabelFeedback } from '../ui/dragFeedbackLabel.js';
@@ -14,8 +15,24 @@ import {
 } from '../config/constants.js';
 import { STRINGS } from '../config/strings.js';
 
+// Crea un Mesh único a partir de una parte. Las partes multi-material del
+// GLB son Groups con un Mesh por primitiva; DragControls solo mueve meshes
+// individuales, así que fusionamos las geometrías en un solo mesh con array
+// de materiales (equivalente a lo que producía el antiguo FBXLoader).
+function partToSingleMesh(part) {
+  if (part.isMesh) return part.clone();
+
+  const meshes = [];
+  forEachPartMesh(part, (mesh) => meshes.push(mesh));
+  const merged = mergeBufferGeometries(meshes.map((m) => m.geometry), true);
+  const materials = meshes.map((m) => (Array.isArray(m.material) ? m.material[0] : m.material));
+  const mesh = new THREE.Mesh(merged, materials);
+  mesh.name = part.name;
+  return mesh;
+}
+
 function addPartCopy(part, position) {
-  const partCopy = part.clone();
+  const partCopy = partToSingleMesh(part);
   partCopy.position.set(position.x, position.y, position.z);
   partCopy.scale.set(MODEL_SCALE, MODEL_SCALE, MODEL_SCALE);
   partCopy.rotateX(MODEL_ROTATE_X);

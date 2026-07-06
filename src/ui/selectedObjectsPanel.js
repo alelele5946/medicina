@@ -1,6 +1,7 @@
 import { appState } from '../state/appState.js';
 import { camera } from '../core/scene.js';
 import { animarCamara } from '../utils/cameraAnimation.js';
+import { findPartFor } from '../utils/parts.js';
 import { showPartName } from './partNameDisplay.js';
 import { opacitySlider, updateOpacity } from './opacitySlider.js';
 import { OPACITY_SELECTED_VALUE } from '../config/constants.js';
@@ -22,11 +23,16 @@ export function hideSelectedObjectsPanel() {
 }
 
 // Rebuilds the panel's button list from the raycaster's intersected objects.
+// Each intersected child mesh is mapped back to its owning anatomical part.
 export function renderSelectedObjects(intersects) {
   toggleSelectedObjectsBtn.style.display = 'block';
   container.innerHTML = '';
 
-  const uniqueObjects = new Set(intersects.map((intersect) => intersect.object));
+  const uniqueObjects = new Set(
+    intersects
+      .map((intersect) => findPartFor(intersect.object, appState.partesCuerpo))
+      .filter((part) => part !== null)
+  );
   uniqueObjects.forEach((object) => {
     const button = document.createElement('button');
     button.innerHTML = object.name;

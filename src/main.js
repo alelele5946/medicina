@@ -51,4 +51,11 @@ loadAnatomyModel({ onProgress: updateLoadingProgress }).then(({ object, parts })
   scene.add(object);
 });
 
+// Handle de depuración para inspeccionar la escena desde la consola del navegador
+if (import.meta.env.DEV) {
+  import('three').then((THREE) => {
+    window.__app = { scene, appState, THREE };
+  });
+}
+
 startAnimationLoop();
