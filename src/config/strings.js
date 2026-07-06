@@ -1,7 +1,7 @@
 // User-facing Spanish copy, centralized for easier maintenance/localization.
 
 export const STRINGS = {
-  DESELECTED: 'deselected',
+  DESELECTED: 'Deseleccionado',
   DRAG_POSITION_INCORRECT: 'Posición incorrecta',
   DRAG_POSITION_CORRECT: 'Posición correcta',
   DRAG_POSITION_CLOSE: 'Nos acercamos',

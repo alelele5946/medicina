@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { camera, renderer } from '../core/scene.js';
 import { orbitControls } from '../controls/orbitControls.js';
-import { dragControls } from '../controls/dragControls.js';
+import { toggleDragMode } from '../controls/controlsCoordinator.js';
 import { appState } from '../state/appState.js';
 import { animarCamara } from '../utils/cameraAnimation.js';
 import { showPartName } from '../ui/partNameDisplay.js';
@@ -51,18 +51,17 @@ export function setupRaycastSelection() {
         appState.intersectIndex = (appState.intersectIndex + 1) % appState.intersects.length;
       }
     }
-    if (event.ctrlKey) {
-      appState.orbitControlsEnabled = !appState.orbitControlsEnabled;
-      orbitControls.enabled = appState.orbitControlsEnabled;
-      dragControls.enabled = !appState.orbitControlsEnabled;
+    // Solo la tecla Control (no cualquier atajo Ctrl+X) e ignorando los
+    // eventos repetidos de mantenerla pulsada: mantener Ctrl activa el modo
+    // drag, soltarla vuelve al modo órbita.
+    if (event.key === 'Control' && !event.repeat) {
+      toggleDragMode();
     }
   });
 
   document.addEventListener('keyup', (event) => {
     if (event.key === 'Control') {
-      appState.orbitControlsEnabled = !appState.orbitControlsEnabled;
-      orbitControls.enabled = appState.orbitControlsEnabled;
-      dragControls.enabled = !appState.orbitControlsEnabled;
+      toggleDragMode();
     }
   });
 

@@ -8,9 +8,7 @@ export const CAMERA_VIEWS = {
   },
   FRONT: {
     position: { x: 0, y: 0, z: 50 },
-    // NOTE: differs from CLASS1_EXIT_LOOKAT below (both nominally "front view").
-    // Preserved as-is from the original code — see README "Known Issues".
-    lookAt: { x: 0, y: -6, z: -1 },
+    lookAt: { x: 0, y: 0, z: 0 },
   },
   DOWN: {
     position: { x: 0, y: -50, z: 0 },
@@ -36,14 +34,6 @@ export const MODEL_SCALE = 0.004;
 export const MODEL_TRANSLATE_Y = -60;
 export const MODEL_ROTATE_X = -Math.PI / 2;
 
-// NOTE: differs from MODEL_TRANSLATE_Y above (-60 vs -45) — likely unintentional
-// drift in the original code. Preserved as-is — see README "Known Issues".
-export const CLASS1_COPY_TRANSLATE_Y = -45;
-
-// Class1 lesson: front-view reset used when exiting the lesson
-export const CLASS1_EXIT_LOOKAT = { x: 0, y: 0, z: 0 };
-export const CLASS1_EXIT_CAMERA_POSITION = { x: 0, y: 0, z: 50 };
-
 // Class1 lesson: anatomical part names and target positions
 export const CLASS1_PART_NAMES = {
   INCISOR_RIGHT: 'Lower_medial_incisor_r',
@@ -51,14 +41,12 @@ export const CLASS1_PART_NAMES = {
   MANDIBLE: 'Mandible',
 };
 
-export const CLASS1_FIRST_TIME_POSITIONS = {
-  INCISOR_RIGHT: { x: 20, y: 30, z: 6 },
-  INCISOR_LEFT: { x: 20, y: 35, z: 6 },
-};
-
-export const CLASS1_REPEAT_POSITIONS = {
-  INCISOR_RIGHT: { x: 20, y: -10, z: 6 },
-  INCISOR_LEFT: { x: 20, y: -15, z: 6 },
+// Staging positions where the cloned incisors appear, to the side of the head.
+// (The original code expressed these as position + a translateY(-45)
+// compensation on first entry, and as direct positions on re-entry.)
+export const CLASS1_STAGING_POSITIONS = {
+  INCISOR_RIGHT: { x: 20, y: -15, z: 6 },
+  INCISOR_LEFT: { x: 20, y: -10, z: 6 },
 };
 
 // Drag proximity tolerances (used by isInRange)

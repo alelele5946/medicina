@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { scene, camera } from '../core/scene.js';
+import { scene } from '../core/scene.js';
 import { dragControls } from '../controls/dragControls.js';
 import { appState } from '../state/appState.js';
 import { setPartOpacity } from '../utils/materials.js';
@@ -8,11 +8,7 @@ import { updateOpacity } from '../ui/opacitySlider.js';
 import { showDragLabel, hideDragLabel, getPositionDistances, updateDragLabelFeedback } from '../ui/dragFeedbackLabel.js';
 import {
   CLASS1_PART_NAMES,
-  CLASS1_FIRST_TIME_POSITIONS,
-  CLASS1_REPEAT_POSITIONS,
-  CLASS1_EXIT_CAMERA_POSITION,
-  CLASS1_EXIT_LOOKAT,
-  CLASS1_COPY_TRANSLATE_Y,
+  CLASS1_STAGING_POSITIONS,
   MODEL_SCALE,
   MODEL_ROTATE_X,
 } from '../config/constants.js';
@@ -22,7 +18,6 @@ function addPartCopy(part, position) {
   const partCopy = part.clone();
   partCopy.position.set(position.x, position.y, position.z);
   partCopy.scale.set(MODEL_SCALE, MODEL_SCALE, MODEL_SCALE);
-  partCopy.translateY(CLASS1_COPY_TRANSLATE_Y);
   partCopy.rotateX(MODEL_ROTATE_X);
   partCopy.myPosition = part.getWorldPosition(new THREE.Vector3());
   setPartOpacity(partCopy, 1);
@@ -55,8 +50,7 @@ function exitLesson() {
 
   updateOpacity();
   showPartName(STRINGS.DESELECTED);
-  camera.position.set(CLASS1_EXIT_CAMERA_POSITION.x, CLASS1_EXIT_CAMERA_POSITION.y, CLASS1_EXIT_CAMERA_POSITION.z);
-  camera.lookAt(CLASS1_EXIT_LOOKAT.x, CLASS1_EXIT_LOOKAT.y, CLASS1_EXIT_LOOKAT.z); // vista frontal
+  // La vista frontal ya se aplicó al inicio del handler vía frontButton.click()
   appState.selectedPart = null;
 }
 
@@ -86,25 +80,23 @@ function enterLesson() {
     appState.selectedPart.isSelected = true;
 
     if (objectToDuplicate1) {
-      const p = CLASS1_FIRST_TIME_POSITIONS.INCISOR_RIGHT;
+      const p = CLASS1_STAGING_POSITIONS.INCISOR_RIGHT;
       addPartCopy(objectToDuplicate1, new THREE.Vector3(p.x, p.y, p.z));
     }
     if (objectToDuplicate2) {
-      const p = CLASS1_FIRST_TIME_POSITIONS.INCISOR_LEFT;
+      const p = CLASS1_STAGING_POSITIONS.INCISOR_LEFT;
       addPartCopy(objectToDuplicate2, new THREE.Vector3(p.x, p.y, p.z));
     }
     showPartName(STRINGS.CLASS1_INSTRUCTION_FIRST_TIME);
 
     updateOpacity();
   } else {
-    let incisive = appState.objetosControlados[0];
-    let position = new THREE.Vector3(CLASS1_REPEAT_POSITIONS.INCISOR_RIGHT.x, CLASS1_REPEAT_POSITIONS.INCISOR_RIGHT.y, CLASS1_REPEAT_POSITIONS.INCISOR_RIGHT.z);
-    incisive.position.set(position.x, position.y, position.z);
-    scene.add(incisive);
-    incisive = appState.objetosControlados[1];
-    position = new THREE.Vector3(CLASS1_REPEAT_POSITIONS.INCISOR_LEFT.x, CLASS1_REPEAT_POSITIONS.INCISOR_LEFT.y, CLASS1_REPEAT_POSITIONS.INCISOR_LEFT.z);
-    incisive.position.set(position.x, position.y, position.z);
-    scene.add(incisive);
+    const right = CLASS1_STAGING_POSITIONS.INCISOR_RIGHT;
+    appState.objetosControlados[0].position.set(right.x, right.y, right.z);
+    scene.add(appState.objetosControlados[0]);
+    const left = CLASS1_STAGING_POSITIONS.INCISOR_LEFT;
+    appState.objetosControlados[1].position.set(left.x, left.y, left.z);
+    scene.add(appState.objetosControlados[1]);
     appState.selectedPart = appState.partesCuerpo.find((parte) => parte.name === CLASS1_PART_NAMES.MANDIBLE);
     appState.selectedPart.isSelected = true;
 

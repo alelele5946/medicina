@@ -64,29 +64,13 @@
   background: var(--color-primary);
 }
 
+/* Las barras se rotan desde JS (loadingSpinner.js) según el progreso real
+   de descarga del modelo — sin animaciones de temporizador fijo. */
 .circle .left .progress {
   z-index: 1;
-  animation: left 4s linear both;
-}
-
-@keyframes left {
-  100% {
-    transform: rotate(180deg);
-  }
 }
 
 .circle .right {
   z-index: 3;
   transform: rotate(180deg);
-}
-
-.circle .right .progress {
-  animation: right 4s linear both;
-  animation-delay: 4s;
-}
-
-@keyframes right {
-  100% {
-    transform: rotate(180deg);
-  }
 }

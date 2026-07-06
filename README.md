@@ -84,13 +84,15 @@ npm run build
 
 Esto genera el sitio estático en `dist/`, listo para publicarse en la rama/rama de Pages configurada (por ejemplo mediante `gh-pages` o una GitHub Action que suba `dist/`). La URL resultante sería `https://alelele5946.github.io/medicina/`.
 
-## Known Issues
+## Known Issues (historial de inconsistencias resueltas)
 
-Durante la refactorización se preservó intencionalmente el comportamiento existente en lugar de "corregirlo" silenciosamente. Quedan documentadas aquí las inconsistencias encontradas:
+Durante la refactorización inicial se preservó el comportamiento existente sin corregirlo. En una pasada posterior se analizaron y resolvieron las inconsistencias detectadas:
 
-- **Vista frontal con dos puntos de mira distintos:** el botón "front" del menú Vistas usa `lookAt(0, -6, -1)`, mientras que el reseteo de cámara al salir de la lección Class1 usa `lookAt(0, 0, 0)` para lo que también se describe como vista frontal. Es probable que sea una deriva no intencionada; se preservaron ambos valores como constantes separadas (`CAMERA_VIEWS.FRONT` y `CLASS1_EXIT_LOOKAT` en `src/config/constants.js`).
-- **Offset vertical distinto entre el modelo principal y las copias de la lección:** el modelo principal usa `translateY(-60)`, mientras que las piezas dentales clonadas para la lección Class1 usan `translateY(-45)`. Se mantienen como constantes separadas (`MODEL_TRANSLATE_Y` y `CLASS1_COPY_TRANSLATE_Y`).
-- **Menú hamburguesa duplicado (ya resuelto):** el proyecto original tenía dos mecanismos de menú móvil superpuestos (uno basado en checkbox con el buscador de partes, otro basado en clases JS). Se conservó únicamente el menú lateral por checkbox y se eliminó el otro mecanismo, por ser el más completo y el que coincide con el historial de commits del proyecto.
+- **Vista frontal con dos puntos de mira distintos (resuelto):** el `lookAt(0, -6, -1)` del botón "front" era código muerto — la llamada inmediata a `orbitControls.update()` reorienta la cámara hacia su target `(0, 0, 0)`, así que ambas "vistas frontales" ya eran idénticas en la práctica. Se unificó todo en un único preset (`CAMERA_VIEWS.FRONT`) sin cambio visual.
+- **Offset vertical -45 en las copias de la lección (resuelto):** no era un bug sino una compensación encubierta: las posiciones de primera entrada `(20, 30/35, 6)` menos el `translateY(-45)` daban exactamente las posiciones que la reentrada usaba directamente. Se sustituyó por posiciones explícitas únicas (`CLASS1_STAGING_POSITIONS`) y se eliminó la compensación.
+- **Atajo Ctrl impredecible (resuelto):** el toggle de modo drag reaccionaba a *cualquier* tecla pulsada con Ctrl presionado (p. ej. Ctrl+C) y a los eventos repetidos de mantener la tecla, alternando el estado varias veces. Ahora solo reacciona a la propia tecla Control e ignora repeticiones: mantener Ctrl activa el modo drag, soltarla vuelve al modo órbita.
+- **Loader circular decorativo (resuelto):** las barras de progreso tenían animaciones CSS con temporizador fijo (4s + 4s) que sobrescribían el progreso real calculado en JS. Se eliminaron; ahora las barras reflejan el porcentaje de descarga real del modelo.
+- **Menú hamburguesa duplicado (resuelto):** el proyecto original tenía dos mecanismos de menú móvil superpuestos (uno basado en checkbox con el buscador de partes, otro basado en clases JS). Se conservó únicamente el menú lateral por checkbox y se eliminó el otro mecanismo, por ser el más completo y el que coincide con el historial de commits del proyecto.
 - **CSS y funcionalidad muerta eliminados:** se quitaron reglas CSS sin ningún HTML correspondiente (`.side-menu`, `#loader`/`#progressContainer`/`#progressBar`/`#progressText`, la animación `.dot`), y código JS sin uso (helpers de etiquetas CSS2D nunca instanciados, un `SpotLightHelper` no añadido a la escena, arrays sin poblar).
 
 ## Licencia
