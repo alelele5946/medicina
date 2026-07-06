@@ -1,25 +1,23 @@
 @media (max-width: 600px) {
   .container .menu {
     flex-direction: column;
-    padding-top: 10vh;
+    align-items: stretch;
+    gap: 6px;
+    position: fixed;
+    top: var(--header-height);
+    right: 0;
+    width: 220px;
+    padding: 12px;
+    background: var(--color-surface);
+    border-left: 1px solid var(--color-border);
+    box-shadow: var(--shadow-md);
+    height: calc(100vh - var(--header-height));
+    overflow-y: auto;
   }
 
   .container .menu button {
     display: block;
-    text-decoration: none;
-    padding: 20px;
-    color: var(--color-border-muted);
-    background: var(--color-bg-dark-2);
-    border-left: 5px solid transparent;
-    transition: all var(--transition-slide);
     width: 100%;
-    margin-bottom: 0px;
-    border: 1px solid var(--color-border-muted);
-    font-size: 12px;
-  }
-
-  .container .menu button:hover {
-    border-left: 5px solid var(--color-border-muted);
-    background: var(--color-bg-dark-2);
+    text-align: left;
   }
 }

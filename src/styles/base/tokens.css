@@ -1,23 +1,58 @@
 :root {
+  /* Marca */
   --color-primary: #4158d0;
-  --color-success: #4caf50;
+  --color-primary-hover: #3448b0;
+  --color-primary-soft: #e8ecfb;
+
+  /* Estados / feedback */
+  --color-success: #2e9e5b;
+  --color-warning: #e08a00;
+  --color-danger: #d64545;
+
+  /* Neutrales (tema claro) */
+  --color-bg: #f1f3f6;
+  --color-surface: #ffffff;
+  --color-text: #1f2430;
+  --color-text-muted: #6b7280;
+  --color-border: #e2e6ec;
   --color-border-muted: #c7c7c7;
+
+  /* Neutrales oscuros (menú lateral) */
   --color-bg-dark-1: #1c1c1c;
   --color-bg-dark-2: #1f1f1f;
   --color-bg-dark-3: #2c2c2c;
   --color-bg-dark-4: #6a6a6a;
   --color-bg-dark-5: #888;
-  --color-dropbtn-bg: #efefef;
-  --color-loader-inner-bg: #dde6f0;
 
+  /* Componentes concretos */
+  --color-dropbtn-bg: #efefef;
+  --color-loader-inner-bg: #ffffff;
+
+  /* Overlays y sombras */
   --overlay-scrim: rgba(0, 0, 0, 0.5);
   --shadow-soft: rgba(0, 0, 0, 0.2);
   --shadow-menu: rgba(0, 0, 0, 0.1);
-  --overlay-panel-bg: rgba(255, 255, 255, 0.8);
+  --overlay-panel-bg: rgba(255, 255, 255, 0.9);
+  --shadow-sm: 0 1px 3px rgba(16, 24, 40, 0.08);
+  --shadow-md: 0 4px 16px rgba(16, 24, 40, 0.12);
+  --shadow-lg: 0 8px 30px rgba(16, 24, 40, 0.18);
 
-  --transition-fast: 0.3s ease;
+  /* Radios */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-pill: 999px;
+
+  /* Tipografía */
+  --font-ui: 'Poppins', sans-serif;
+  --font-brand: 'Montserrat Alternates', sans-serif;
+
+  /* Transiciones */
+  --transition-fast: 0.15s ease;
   --transition-slide: 400ms ease;
   --transition-overlay: 500ms ease;
 
+  /* Layout */
+  --header-height: 64px;
   --breakpoint-mobile: 600px;
 }

@@ -10,17 +10,36 @@
   display: none;
   position: fixed;
   right: 0;
-  top: 0;
-  width: 200px;
-  height: 100%;
+  top: var(--header-height);
+  width: 240px;
+  height: calc(100vh - var(--header-height));
   overflow-y: auto;
   background-color: var(--overlay-panel-bg);
-  padding: 20px;
+  backdrop-filter: blur(6px);
+  border-left: 1px solid var(--color-border);
+  box-shadow: var(--shadow-md);
+  padding: 14px;
   box-sizing: border-box;
+  z-index: 15;
 }
 
 #selectedObjectsContainer button {
   display: block;
   width: 100%;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
+  padding: 10px 12px;
+  text-align: left;
+  font-size: 13px;
+  color: var(--color-text);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+#selectedObjectsContainer button:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  background: var(--color-primary-soft);
 }

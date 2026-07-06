@@ -16,8 +16,8 @@ export const CAMERA_VIEWS = {
   },
 };
 
-// Renderer / scene setup
-export const RENDERER_CLEAR_COLOR = 0xE0E0E0;
+// Renderer / scene setup (matches --color-bg in src/styles/base/tokens.css)
+export const RENDERER_CLEAR_COLOR = 0xF1F3F6;
 export const CAMERA_FOV = 75;
 export const CAMERA_NEAR = 0.1;
 export const CAMERA_FAR = 1000;

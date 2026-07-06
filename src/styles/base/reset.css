@@ -5,9 +5,10 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: 'Montserrat Alternates', sans-serif;
+  font-family: var(--font-ui);
 }
 
 body {
   position: relative;
+  color: var(--color-text);
 }

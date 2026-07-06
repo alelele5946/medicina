@@ -1,16 +1,19 @@
 .slider-container {
-  display: inline-block;
-  vertical-align: middle;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 #opacity-slider {
-  vertical-align: middle;
-  margin-right: 5px;
+  accent-color: var(--color-primary);
+  cursor: pointer;
 }
 
 #opacity-value {
   display: inline-block;
-  min-width: 40px;
+  min-width: 44px;
   text-align: right;
-  margin-left: 5px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-text-muted);
 }

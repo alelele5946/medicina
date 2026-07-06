@@ -16,6 +16,7 @@ export function buildPartBrowserMenu(parts) {
   parts.forEach((part) => letras.add(part.name[0].toUpperCase()));
 
   const letrasContainer = document.createElement('div');
+  letrasContainer.className = 'letter-grid';
   botonesContainer.appendChild(letrasContainer);
 
   const letrasArray = Array.from(letras).sort();
@@ -32,6 +33,7 @@ export function buildPartBrowserMenu(parts) {
   function mostrarPartesPorLetra(letra) {
     letrasContainer.style.display = 'none';
     const partesContainer = document.createElement('div');
+    partesContainer.className = 'part-list';
     botonesContainer.appendChild(partesContainer);
 
     for (const parte of parts) {
@@ -61,6 +63,7 @@ export function buildPartBrowserMenu(parts) {
     }
 
     const botonAtras = document.createElement('button');
+    botonAtras.className = 'back-button';
     botonAtras.innerText = STRINGS.BACK_BUTTON;
     botonAtras.addEventListener('click', function () {
       botonesContainer.removeChild(partesContainer);

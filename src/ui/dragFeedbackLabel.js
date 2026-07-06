@@ -26,14 +26,15 @@ export function getPositionDistances(object) {
 }
 
 export function updateDragLabelFeedback({ xDistance, yDistance, zDistance }) {
+  dragLabel.classList.remove('drag-label--far', 'drag-label--medium', 'drag-label--close');
   if (xDistance === 'far' || yDistance === 'far' || zDistance === 'far') {
-    dragLabel.innerHTML = STRINGS.DRAG_POSITION_INCORRECT;
-    dragLabel.style.backgroundColor = 'red';
+    dragLabel.textContent = STRINGS.DRAG_POSITION_INCORRECT;
+    dragLabel.classList.add('drag-label--far');
   } else if (xDistance === 'close' && yDistance === 'close' && zDistance === 'close') {
-    dragLabel.innerHTML = STRINGS.DRAG_POSITION_CORRECT;
-    dragLabel.style.backgroundColor = 'green';
+    dragLabel.textContent = STRINGS.DRAG_POSITION_CORRECT;
+    dragLabel.classList.add('drag-label--close');
   } else {
-    dragLabel.innerHTML = STRINGS.DRAG_POSITION_CLOSE;
-    dragLabel.style.backgroundColor = 'orange';
+    dragLabel.textContent = STRINGS.DRAG_POSITION_CLOSE;
+    dragLabel.classList.add('drag-label--medium');
   }
 }

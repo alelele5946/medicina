@@ -60,14 +60,55 @@
   padding: 20px;
   color: var(--color-border-muted);
   background: var(--color-bg-dark-2);
+  border: none;
   border-left: 5px solid transparent;
-  transition: all var(--transition-slide);
+  transition: all var(--transition-fast);
   width: 100%;
+  cursor: pointer;
+  font-size: 13px;
+  text-align: left;
 }
 
 .cont-menu nav button:hover {
-  border-left: 5px solid var(--color-border-muted);
-  background: var(--color-bg-dark-2);
+  border-left: 5px solid var(--color-primary);
+  background: var(--color-bg-dark-3);
+  color: #fff;
+}
+
+/* Índice de letras como cuadrícula de fichas */
+.cont-menu nav .letter-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  padding: 14px;
+}
+
+.cont-menu nav .letter-grid button {
+  padding: 12px 0;
+  text-align: center;
+  font-size: 15px;
+  font-weight: 600;
+  color: #fff;
+  background: var(--color-bg-dark-3);
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+}
+
+.cont-menu nav .letter-grid button:hover {
+  border: 1px solid var(--color-primary);
+  background: var(--color-primary);
+}
+
+/* Lista de partes de una letra */
+.cont-menu nav .part-list {
+  padding: 10px 0;
+}
+
+.cont-menu nav .part-list .back-button {
+  color: #fff;
+  font-weight: 600;
+  background: var(--color-bg-dark-3);
+  border-left: 5px solid var(--color-primary);
 }
 
 .cont-menu label {
