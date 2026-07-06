@@ -1,0 +1,25 @@
+@media (max-width: 600px) {
+  .container .menu {
+    flex-direction: column;
+    padding-top: 10vh;
+  }
+
+  .container .menu button {
+    display: block;
+    text-decoration: none;
+    padding: 20px;
+    color: var(--color-border-muted);
+    background: var(--color-bg-dark-2);
+    border-left: 5px solid transparent;
+    transition: all var(--transition-slide);
+    width: 100%;
+    margin-bottom: 0px;
+    border: 1px solid var(--color-border-muted);
+    font-size: 12px;
+  }
+
+  .container .menu button:hover {
+    border-left: 5px solid var(--color-border-muted);
+    background: var(--color-bg-dark-2);
+  }
+}

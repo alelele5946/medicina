@@ -1,0 +1,16 @@
+.toggle-btn {
+  display: inline-block;
+  padding: 15px;
+  line-height: normal;
+  text-decoration: none;
+  color: black;
+  transition: all var(--transition-fast);
+  border: 2px solid transparent;
+  font-size: 15px;
+  margin-right: 5px;
+}
+
+.toggle-btn.active {
+  background-color: var(--color-success);
+  color: white;
+}

@@ -1,0 +1,23 @@
+:root {
+  --color-primary: #4158d0;
+  --color-success: #4caf50;
+  --color-border-muted: #c7c7c7;
+  --color-bg-dark-1: #1c1c1c;
+  --color-bg-dark-2: #1f1f1f;
+  --color-bg-dark-3: #2c2c2c;
+  --color-bg-dark-4: #6a6a6a;
+  --color-bg-dark-5: #888;
+  --color-dropbtn-bg: #efefef;
+  --color-loader-inner-bg: #dde6f0;
+
+  --overlay-scrim: rgba(0, 0, 0, 0.5);
+  --shadow-soft: rgba(0, 0, 0, 0.2);
+  --shadow-menu: rgba(0, 0, 0, 0.1);
+  --overlay-panel-bg: rgba(255, 255, 255, 0.8);
+
+  --transition-fast: 0.3s ease;
+  --transition-slide: 400ms ease;
+  --transition-overlay: 500ms ease;
+
+  --breakpoint-mobile: 600px;
+}

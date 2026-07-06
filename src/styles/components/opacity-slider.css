@@ -1,0 +1,16 @@
+.slider-container {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+#opacity-slider {
+  vertical-align: middle;
+  margin-right: 5px;
+}
+
+#opacity-value {
+  display: inline-block;
+  min-width: 40px;
+  text-align: right;
+  margin-left: 5px;
+}
